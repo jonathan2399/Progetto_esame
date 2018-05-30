@@ -1,12 +1,12 @@
 //SCRIPT PER LA GESTIONE DEGLI EVENTI NE MOMENTO IN CUI L'UTENTE SI LOGGA
 $(document).ready(function(){
 	var flag=false;
+	var flag2=false;
 	//CLICCA SU ACCEDI
 	$('#valida').click(function(){
 			var button = $(this);
-			if ( button.attr("data-dismiss") != "modal"){
+			if ( button.attr("data-dismiss") !== "modal"){
 				var inputs = $('form input');
-				var title = $('.modal-title');
 				var progress = $('.progress');
 				var progressBar = $('.progress-bar');
 
@@ -18,74 +18,111 @@ $(document).ready(function(){
 
 				progressBar.animate({width : "100%"}, 100);
 
-				progress.delay(1000)
+				progress.delay(500)
 						.fadeOut(600);
 			}
 			//PRENDE IL VALORE DEI CAMPI
 			var username = $('#username').val();
 			var password = $('#password').val();
-			//CHIAMATA AJAX PER CONTROLLARE SE IL LOGIN E' AVVENUTO OPPURE NO
-			$.ajax({
-			  method: 'POST',
-			  url: './dinamiche/controlla.php',
-			  data: {
-				valida: 1,
-				userPHP: username,
-				passPHP: password
-			  },
+		    var ricordami=0;
+		
+			if ($("#idcampocheckboxes").is(":not(:checked)")){ 
+				ricordami=0;
+			} else {
+				ricordami=1;
+			}
+		
+			if(username==="" || password===""){
+				progressBar.css({ "width" : "0%" });
+				inputs.removeAttr("disabled");
+				button.text("Riprova")
+					.removeClass("btn-primary")
+					.addClass("btn-success")
+					.blur()
+					.delay(1000)
+					.fadeIn(function(){
+						button.attr("valida", "modal");
+					});
+				$('#text').replaceWith("<h4 class='modal-title' id='text' >Mancano dei parametri!</h4>");
+			}else{
+				//CHIAMATA AJAX PER CONTROLLARE SE IL LOGIN E' AVVENUTO OPPURE NO
+				$.ajax({
+				  method: 'POST',
+				  url: './dinamiche/controlla.php',
+				  data: {
+					valida: 1,
+					userPHP: username,
+					passPHP: password,
+					ricordami: ricordami
+				  },
 
-			  success: function(response)
-			  {
-				//METTE IL VALORE RESTITUITO IN UN DIV HTML
-				$("#myModalLabel").html(response);
-				var accesso = $("#myModalLabel").text();
-				if(accesso.includes("Login riuscito"))
-					flag=true;
-				if(flag==true){
-					//LOGIN E' AVVENUTO CON SUCCESSO
-					button.text("Close")
-						.removeClass("btn-primary")
-						.addClass("btn-success")
-						.blur()
-						.delay(1600)
-						.fadeIn(function(){
-							button.attr("data-dismiss", "modal");
-						});
-					//RICARICA LA PAGINA PERFARSI CHE SIA IL PHP HA CONTROLLARE SE L'UTENTE E' LOGGATO O NO
-					window.location.reload();
-				}
-				else{
-					//LOGIN NON AVVENUTO
-					var progressBar = $('.progress-bar');
-					progressBar.css({ "width" : "0%" });
-					inputs.removeAttr("disabled");
-					button.text("Riprova")
-						.removeClass("btn-primary")
-						.addClass("btn-success")
-						.blur()
-						.delay(1600)
-						.fadeIn(function(){
-							button.attr("valida", "modal");
-						});
-				}
-			  },
-			  error: function()
-			  {
-				alert("Chiamata fallita, si prega di riprovare...");
-			  },
-			  dataType: 'text'
-			});
+				  success: function(response)
+				  {
+					//METTE IL VALORE RESTITUITO IN UN DIV HTML
+					$("#text").html(response);
+					var accesso = $("#text").text();
+					  
+					if(accesso.includes("Login riuscito")){
+						flag=true;
+					}else if(accesso.includes("bloccato")){
+						flag2=true;
+					}
+					
+					  
+					if(flag===true){
+						//LOGIN E' AVVENUTO CON SUCCESSO
+						button.text("Close")
+							.removeClass("btn-primary")
+							.addClass("btn-success")
+							.blur()
+							.delay(1600)
+							.fadeIn(function(){
+								button.attr("data-dismiss", "modal");
+							});
+						//RICARICA LA PAGINA PERFARSI CHE SIA IL PHP HA CONTROLLARE SE L'UTENTE E' LOGGATO O NO
+						window.location.reload();
+					}
+					else{
+						//LOGIN NON AVVENUTO
+						var progressBar = $('.progress-bar');
+						progressBar.css({ "width" : "0%" });
+						inputs.removeAttr("disabled");
+						button.text("Riprova")
+							.removeClass("btn-primary")
+							.addClass("btn-success")
+							.blur()
+							.delay(1600)
+							.fadeIn(function(){
+								button.attr("valida", "modal");
+							});
+						
+						if(flag2===false){
+							$('#text').replaceWith("<h4 class='modal-title' id='text' >Login non avvenuto</h4>");
+						}
+						else{
+							$('#text').replaceWith("<h4 class='modal-title' id='text' >Sei stato bloccato</h4>");
+							flag2=false;
+						}
+					}
+				  },
+				  error: function()
+				  {
+					alert("Chiamata fallita, si prega di riprovare...");
+				  },
+				  dataType: 'text'
+				});
+			}
 	});
 	//RIPRISTINA IL MODAL
-	$('#myModal').on('hidden.bs.modal', function (e) {
+	$('#myModal').on('hidden.bs.modal', function () {
 		var inputs = $('form input');
-		var title = $('.modal-title');
+		var title = $('#text');
 		var progressBar = $('.progress-bar');
 		var button = $('.modal-footer button');
 
 		inputs.removeAttr("disabled");
 
-		title.text("Log in");
+		title.replaceWith("<h4 class='modal-title' id='text' >Accesso utente</h4>");
 
 		progressBar.css({ "width" : "0%" });
 

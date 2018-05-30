@@ -6,7 +6,7 @@ session_start();
 <html>
 <head>
 	<meta charset="UTF-8">
-	<title>Nome applicazione</title>
+	<title>SearchPlaces</title>
 	<meta name="viewport" content="width=device-width,initial-scale=1">
 	<meta http-equiv="X-UA-Compatible" content="IE=Edge">
 	<link rel="stylesheet" href="style.css">
@@ -43,13 +43,13 @@ session_start();
 			var c = $('#citta').val();
 			if(c==" ")
 				c="Bergamo";
-			
+
 			var q = $(this).attr('id');
 			var url = "./dinamiche/trova.php?cat=1&query=" + q + "&citta="+c;
 			url = url.replace(/ /gi,"%20");
 			window.location = url;
 		});
-		
+
 		$(".cat").hover(function(){
 			$(this).css("opacity", "0.5");
 			}, function(){
@@ -70,6 +70,26 @@ session_start();
    background-repeat: no-repeat;
 }
 
+#form3 label.error {
+   color: #f33;
+   padding: 0;
+   margin: 2px 0 0 0;
+   font-size: 13px;
+   padding-left: 18px;
+   background-position: 0 0;
+   background-repeat: no-repeat;
+}
+	
+#form label.error {
+   color: #f33;
+   padding: 0;
+   margin: 2px 0 0 0;
+   font-size: 13px;
+   padding-left: 18px;
+   background-position: 0 0;
+   background-repeat: no-repeat;
+}
+	
 #mioform label.error {
    color: #f33;
    padding: 0;
@@ -216,27 +236,74 @@ a.article, a.article:hover {
     color: #fff !important;
 }
 
+	
+/*STYLE DELLA SELECT PER RICHIESTA DI SBLOCCO*/
+ul.chec-radio {
+    margin: 15px;
+}
+ul.chec-radio li.pz {
+    display: inline;
+}
+.chec-radio label.radio-inline input[type="checkbox"] {
+    display: none;
+}
+.chec-radio label.radio-inline input[type="checkbox"]:checked+div {
+    color: #fff;
+    background-color: #000;
+}
+.chec-radio .radio-inline .clab {
+    cursor: pointer;
+    background: #e7e7e7;
+    padding: 7px 20px;
+    text-align: center;
+    text-transform: uppercase;
+    color: #333;
+    position: relative;
+    height: 34px;
+    float: left;
+    margin: 0;
+    margin-bottom: 5px;
+}
+.chec-radio label.radio-inline input[type="checkbox"]:checked+div:before {
+    content: "\e013";
+    margin-right: 5px;
+    font-family: 'Glyphicons Halflings';
+}
+.chec-radio label.radio-inline input[type="radio"] {
+    display: none;
+}
+.chec-radio label.radio-inline input[type="radio"]:checked+div {
+    color: #fff;
+    background-color: #000;
+}
+.chec-radio label.radio-inline input[type="radio"]:checked+div:before {
+    content: "\e013";
+    margin-right: 5px;
+    font-family: 'Glyphicons Halflings';
+}
 
 </style>
 <body>
 	<!-- DIV RELATIVO AL CARICAMENTO-->
-	<div id="loading_screen">
+	<div style="background-color: blue; color: white;" id="loading_screen">
 	  <h1>Attendi sto ricercando all'interno del mio archivio</h1>
 	  <p>La pagina &egrave; in caricamento<br/>
 	  Resta connesso e non cambiare sito!</p>
 	</div>
 	<!-- SCRIPT CHE SI OCCUPA DELL'AUTOCOMPLETE TRAMITE API DI GOOGLE MAPS -->
 	<script>
+		function mostra(){
+			/*
+			var citta = $('#citta').val();
+			var query = $('#query').val();
+			if(citta!=""&&query!="")*/
+			$("#loading_screen").fadeOut("slow");
+			//document.getElementById("#loading_screen").style.display = 'block';
+		}
+		
 		$(document).ready(function(){
 			//FUNZIONE CHE APPARE NEL CARICAMENTO DEI DATI
-			$('#cerca').click(function(){
-			  /*
-			  var citta = $('#citta').val();
-			  var query = $('#query').val();
-			  if(citta!=""&&query!="")*/
-				document.getElementById("loading_screen").style.display = 'block';
-			});
-			
+
 			//FUNZIONE PER L'AUTOCOMPLETE NELLE QUERY DA CERCARE-->
 			$( function() {
 			var availableTags = [
@@ -279,7 +346,8 @@ a.article, a.article:hover {
 				}
 			  })
 			  .autocomplete({
-				minLength: 0,
+				//minLength: 0,
+				appendTo:'#result',
 				source: function( request, response ) {
 				  // delegate back to autocomplete, but extract the last term
 				  response( $.ui.autocomplete.filter(
@@ -312,7 +380,7 @@ a.article, a.article:hover {
 		  google.maps.event.addDomListener(window, 'load', init);
 		});
 	</script>
-	
+
 	<div id="page">
 		<header>
 
@@ -330,6 +398,7 @@ a.article, a.article:hover {
 
 							<div class="sidebar-header">
 								<!--SE LOGGATO VISUALIZZA IL NOME DELL'UTENTE CON MESSAGGIO BENVENUTO-->
+								<br>
 								<h3><?php if(isset($_SESSION['Loggato']))echo "Benvenuto ".$_SESSION['Loggato'];?></h3>
 							</div>
 
@@ -339,7 +408,7 @@ a.article, a.article:hover {
 									<!-- RICHIAMA MODALE REGISTRAZIONE -->
 									<?php
 									if(!isset($_SESSION['Loggato']))
-										echo "<a data-toggle=\"modal\" data-target=\"#myModal1\" href=\"\" >Registrati</a>";
+										echo "<a data-toggle='modal' data-target=\"#myModal1\" href=\"\" >Registrati</a>";
 									else
 										echo "<a href=\"cronologia.php\" >Vedi cronologia</a>";
 									?>
@@ -348,9 +417,25 @@ a.article, a.article:hover {
 									<!-- RICHIAMA MODALE ACCEDI -->
 									<?php
 									if(!isset($_SESSION['Loggato']))
-										echo "<a data-toggle=\"modal\" data-target=\"#myModal\" href=\"\" >Accedi</a>";
+										echo "<a data-toggle='modal' data-target=\"#myModal\" href=\"\" >Accedi</a>";
 									else
 										echo "<a href=\"preferiti.php\" >Vedi preferiti</a>";
+									?>
+								</li>
+								<li>
+									<!-- RICHIESTA DI SBLOCCO ALL'AMMINISTRATORE -->
+									<?php
+									if(!isset($_SESSION['Loggato']))
+										echo "<a data-toggle='modal' id=\"contatta\"  data-target='#myModal2' href=\"\" >Contatta admin</a>";
+
+									?>
+								</li>
+								<li>
+									<!-- AGGIORNA PASSWORD UTENTE -->
+									<?php
+									if(isset($_SESSION['Loggato']))
+										echo "<a data-toggle='modal' id=\"aggiorna\"  data-target='#myModal3' href=\"\" >Aggiorna password</a>";
+
 									?>
 								</li>
 								<li>
@@ -365,7 +450,7 @@ a.article, a.article:hover {
 						</nav>
 					</div>
 					<!-- NAVBAR BRAND CHE CORRISPONDE AL TITOLO DELL'APPLICAZIONE -->
-					<a id="titolo" class="navbar-brand" href="">Iplaces</a>
+					<a id="titolo" class="navbar-brand" href="">SearchPlaces</a>
 			</nav>
 
 			<!-- GESTIONE SLIDER -->
@@ -402,8 +487,9 @@ a.article, a.article:hover {
 											</div>
 											<div class="form-group">
 													<input type="text" class="search-query form-control" id="query" name="query" placeholder="Cerca bar, pizzerie, ristoranti" />
+													<div style="text-align: left;" id="result"> </div>
 											</div>
-											<button type="submit" id="cerca" name="cerca" class="btn btn-primary">Cerca</button>
+											<button type="submit" id="cerca" name="cerca" onclick="mostra()" class="btn btn-primary">Cerca</button>
 									</form>
 								</div>
 							</div>
@@ -492,10 +578,9 @@ a.article, a.article:hover {
 
 			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-				<h4 class="modal-title" id="myModalLabel">Accesso utente</h4>
+				<h4 class="modal-title" id="text" >Accesso utente</h4>
 			</div> <!-- /.modal-header -->
-
-
+			
     			<div class="modal-body">
     			        <form name="form1">
         					<div class="form-group">
@@ -511,11 +596,10 @@ a.article, a.article:hover {
         							<label for="password" class="input-group-addon glyphicon glyphicon-lock"></label>
         						</div> <!-- /.input-group -->
         					</div> <!-- /.form-group -->
-
-
+							
     					<div class="checkbox">
     						<label>
-    							<input type="checkbox">Ricordami
+    							<input name="ricordami" type="checkbox">Ricordami
     						</label>
     					</div> <!-- /.checkbox -->
     				</form>
@@ -541,7 +625,7 @@ a.article, a.article:hover {
 
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-					<h4 class="modal-title" id="myModalLabel">Registrazione</h4>
+					<h4 readonly='readonly' class="modal-title" id='myModalLabel1'>Registrazione</h4>
 				</div> <!-- /.modal-header -->
 
 					<div class="modal-body">
@@ -598,6 +682,74 @@ a.article, a.article:hover {
     	</div>
 
 	</div>
+	<!-- FINESTRA MODALE PER LA RICHIESTA DI SBLOCCO ALL'AMMINISTRATORE -->
+	<div class='modal fade' id="myModal2" tabindex='-1' role='dialog' aria-labelledby='myModalLabel2' aria-hidden='true'>
+		  <div class='modal-dialog' role='document'>
+			<div class='modal-content'>
+			  <form method="post" id="form2" name="form2">
+				  <div class='modal-header'>
+					<button type='button' class='close' data-dismiss='modal' aria-label='Close'><span aria-hidden='true'>&times;</span></button>
+					  <h4 readonly='readonly' class='modal-title' id='myModalLabel1'>Contatta admin</h4><hr>
+					<h5>Scegli per cosa vuoi contattarlo</h5>
+					<ul class="chec-radio">
+						<li class="pz">
+							<label class="radio-inline">
+								<input type="radio" checked="" id="pro-chx-residential" name="property_type" class="pro-chx" value="constructed">
+								<div class="clab">Richiesta di sblocco</div>
+							</label>
+						</li>
+						<li class="pz">
+							<label class="radio-inline">
+								<input type="radio" id="pro-chx-commercial" name="property_type" class="pro-chx" value="unconstructed" checked>
+								<div class="clab">Contatta per informazioni</div>
+							</label>
+						</li>
+				    </ul>
+				  </div>
+				  <div class='modal-body'>
+					<div class='form-group'>
+					  <label>Inserisci il tuo username</label>
+					  <input type='text' class='form-control' placeholder='Inserisci il tuo username'>
+					</div>
+					<div class='form-group'>
+					  <label>Scrivi del testo</label>
+					  <textarea class='form-control' placeholder='Scrivi del testo(non obbligatorio)'></textarea>
+					</div>
+				  </div>
+				  <div class='modal-footer'>
+					<input name="invia" value='Invia' type='button' class=' btn btn-primary'></input>
+					<input name="close" value='Close' type='button' class=' btn btn-danger' data-dismiss='modal'></input>
+				  </div>
+			   </form>
+			</div>
+		  </div>
+	</div>
+	<!-- FINESTRA MODALE PER AGGORNARE LA PASSWORD DELL'UTENTE -->
+	<div class='modal fade' id="myModal3" tabindex='-1' role='dialog' aria-labelledby='myModalLabel3' aria-hidden='true'>
+		  <div class='modal-dialog' role='document'>
+			<div class='modal-content'>
+			  <form method="post" id="form3" name="form3">
+				  <div class='modal-header'>
+					<button type='button' id='chiudi' class='close' data-dismiss='modal' aria-label='Close'><span aria-hidden='true'>&times;</span></button>
+					  <h4 readonly='readonly' class='modal-title' id='myModalLabel3'>Aggiorna password</h4><hr>
+				  </div>
+				  <div class='modal-body'>
+					<div class='form-group'>
+					  <input type="password" id='pas' name='pas' class='form-control' placeholder='Inserisci nuova password'>
+					</div>
+					<div class='form-group'>
+					  <input type="password" id='ripe' name='ripe' class='form-control' placeholder='Conferma password'></input>
+					</div>
+				  </div>
+				  <div class='modal-footer'>
+					<button id="conferma" name="conferma" value='conferma' type='submit' class=' btn btn-primary'>Conferma</button>
+					<input id='clo' name="close" value='Close' type='button' class=' btn btn-danger' data-dismiss='modal'></input>
+				  </div>
+			   </form>
+		      <label id="rispo"></label>
+			</div>
+		  </div>
+	</div>
 	<!------------------------------------------------------------------------------------------------------->
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
@@ -622,8 +774,7 @@ a.article, a.article:hover {
                     $('.collapse.in').toggleClass('in');
                     $('a[aria-expanded=true]').attr('aria-expanded', 'false');
                 });
-
-
+				
             });
     </script>
 </body>

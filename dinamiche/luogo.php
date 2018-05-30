@@ -1,4 +1,9 @@
-<?php 
+<style>
+.scroll{
+	overflow: auto;
+}
+</style>
+<?php
 include("../classi/Sql.php");
 include("../classi/PhpGoogleMap.php");
 session_start();
@@ -38,7 +43,7 @@ try{
 	$state=$row["Stato"];
 	$img_array = explode(";",$row["Immagini"]);
 	$orario= explode(";",$row['Orario']);
-	
+
 	//PRELEVA I COMMENTI DAL DATABASE
 	if(isset($_SESSION['Loggato'])){
 		require("./Commenti/preleva_commenti.php");
@@ -60,16 +65,18 @@ $sql->chiudi();
 	<link rel="stylesheet" href="../style.css">
 	<script src="http://code.jquery.com/jquery-latest.js"></script>
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css"/>
+	<script type="text/javascript" src="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 	<style>
 		.table{
 			font-size: 12px;
 		}
-		
+
 		th{
 			font-size: 13.5px;
 		}
-		
+
 	</style>
 	<script>
 		(function(){
@@ -80,14 +87,14 @@ $sql->chiudi();
 					return this.each(function(){
 						$(this).on('keyup', function(e){
 							$('.filterTable_no_results').remove();
-							var $this = $(this), 
-								search = $this.val().toLowerCase(), 
-								target = $this.attr('data-filters'), 
-								$target = $(target), 
+							var $this = $(this),
+								search = $this.val().toLowerCase(),
+								target = $this.attr('data-filters'),
+								$target = $(target),
 								$rows = $target.find('tbody tr');
 
 							if(search == '') {
-								$rows.show(); 
+								$rows.show();
 							} else {
 								$rows.each(function(){
 									var $this = $(this);
@@ -111,7 +118,7 @@ $sql->chiudi();
 			$('[data-action="filter"]').filterTable();
 
 			$('.container').on('click', '.panel-heading span.filter', function(e){
-				var $this = $(this), 
+				var $this = $(this),
 					$panel = $this.parents('.panel');
 
 				$panel.find('.panel-body').slideToggle();
@@ -121,7 +128,7 @@ $sql->chiudi();
 			});
 			$('[data-toggle="tooltip"]').tooltip();
 		})
-		
+
 		function aggiorna(){
 			var count = $('.badge').attr("id");
 			$.ajax({
@@ -134,16 +141,16 @@ $sql->chiudi();
 				},
 				success: function(risposta){
 					if(risposta.includes("false")){
-						
+
 					}else{
 						$('#risposta').html(risposta);
 					}
-					
+
 					$('.panel-group .close').click(function(){
 							var id = $(this).attr("id");
-							$.ajax({  
+							$.ajax({
 							  method: 'POST',
-							  url: "controlla.php",  
+							  url: "controlla.php",
 							  data: "Elimina=1" + "&Id=" + id,
 							  dataType: "html",
 							  success: function(risposta){
@@ -163,13 +170,17 @@ $sql->chiudi();
 		window.setInterval(aggiorna,1000);
 	</script>
 	<script type="text/javascript">
+		$(function(){
+			$('#scrollabile').css('height', $(window).height()+'px');
+		});
 		$(document).ready(function(){
+
 			//INVIA COMMENTO
 			$("#invia").click(function(){
 				var testo = $('#commento').val();
-				$.ajax({  
+				$.ajax({
 				  method: 'POST',
-				  url: "controlla.php",  
+				  url: "controlla.php",
 				  data: "InviaPHP=1" + "&testoPHP=" + testo,
 				  dataType: "html",
 				  success: function(risposta){
@@ -177,9 +188,9 @@ $sql->chiudi();
 						//ELIMINA COMMENTO // PRENDO LA CLASSE DEL PULSANTE CLOSE
 						$('.panel-group .close').click(function(){
 							var id = $(this).attr("id");
-							$.ajax({  
+							$.ajax({
 							  method: 'POST',
-							  url: "controlla.php",  
+							  url: "controlla.php",
 							  data: "Elimina=1" + "&Id=" + id,
 							  dataType: "html",
 							  success: function(risposta){
@@ -200,16 +211,16 @@ $sql->chiudi();
 				});
 				return false;
 			});
-			
+
 			//ELIMINA COMMENTO // PRENDO LA CLASSE DEL PULSANTE CLOSE
 			$('.panel-group .close').click(function(){
 				var id = $(this).attr("id");
 				var count = $('.badge').attr("id");
 				count=count-1;
 				$('#risposta .commenti .badge').replaceWith("<span id='"+count+"' class='badge'>"+count+"</span>");
-				$.ajax({  
+				$.ajax({
 				  method: 'POST',
-				  url: "controlla.php",  
+				  url: "controlla.php",
 				  data: "Elimina=1" + "&Id=" + id,
 				  dataType: "html",
 				  success: function(risposta){
@@ -220,11 +231,11 @@ $sql->chiudi();
 				  }
 				});
 			});
-			
+
 			$('#salva').click(function(){
-				$.ajax({  
+				$.ajax({
 				  method: 'POST',
-				  url: "controlla.php",  
+				  url: "controlla.php",
 				  data: "Salva=1",
 				  dataType: "html",
 				  success: function(risposta){
@@ -234,8 +245,16 @@ $sql->chiudi();
 					alert("Chiamata fallita, si prega di riprovare...");
 				  }
 				});
-				return false;			 			 
+				return false;
 			});
+		});
+		
+		$('.fade').slick({
+		  dots: true,
+		  infinite: true,
+		  speed: 500,
+		  fade: true,
+		  cssEase: 'linear'
 		});
 	</script>
 	<style>
@@ -262,7 +281,7 @@ $sql->chiudi();
 		  <hr>
 		  <h3>Telefono</h3><h5><?php echo $phone ?></h5>
 		  <hr>
-		  <?php 
+		  <?php
 				$days=array();
 			    $params=array();
 				echo "<div class='panel panel-primary'>
@@ -285,21 +304,21 @@ $sql->chiudi();
 								$days=explode(': ',$orario[$i]);
 								if(isset($days[1]))
 									$params=explode(',',$days[1]);
-								
+
 								echo "<tr>
 									<td>".$days[0]."</td>
 									";
-								
+
 								if(isset($params[0]))
 									echo "<td>".$params[0]."</td>";
 								else
 									echo "<td>Closed</td>";
-								
+
 								if(isset($params[1]))
 									echo "<td>".$params[1]."</td>";
 								else
 									echo "<td>Closed</td>";
-								
+
 								echo "</tr>";
 							}
 						echo "</tbody>
@@ -307,10 +326,13 @@ $sql->chiudi();
 				</div>
 				";
 			//}
-			
+
 		  ?>
 		</div>
 		<div class="col-sm-9">
+
+			<div id="scrollabile" class="scroll">
+
 		  <h3>Categoria</h3><h5><?php echo $categoria ?></h5>
 		  <hr>
 		  <h3>Città</h3><h5><?php echo $city ?></h5>
@@ -321,19 +343,17 @@ $sql->chiudi();
 		  <hr>
 		  <h3>Stato</h3><h5><?php echo $state ?></h5>
 		  <hr>
-		  <h3>Telefono</h3><h5><?php echo $phone ?></h5>
-		  <hr>
 		  <h3>Cap</h3><h5><?php echo $cap ?></h5>
 		  <hr>
 		  <h3>Descrizione</h3><h5><?php  echo $descrizione ?></h5>
 		  <hr>
-			
+
 		  <!--<div class="container">-->
 			  <!-- SLIDER CON LE IMMAGINI DEL POSTO -->
 			  <h3>Immagini del posto</h3>
 			   <div id="myCarousel1" class="carousel slide" data-ride="carousel">
 			   <?php
-				   
+					$i=0;
 					//Indicators
 					echo "<ol class=\"carousel-indicators\">";
 						while($i<(count($img_array)-1)){
@@ -343,35 +363,35 @@ $sql->chiudi();
 							}
 							else{
 								echo "<li data-target=\"#myCarousel1\" data-slide-to=\"$i\"></li>";
-								$i++;
 							}
+							$i++;
 						}
 					echo "</ol>";
-					
+
 					$i=0;
 					echo "<div id=\"inner\" class=\"carousel-inner\">";
 						//SLIDE IMMAGINI DEL POSTO
 						while($i<(count($img_array)-1)){
 							if($i==0){
-								echo "<div class=\"item active\"> <img style=\"width:847px; height: 400px;\" class=\"img-responsive\" src=".$img_array[$i]."></div>";
+								echo "<div class=\"item active\"> <img style=\"width:100%; height: 100%;\" class=\"img-responsive\" src=".$img_array[$i]."></div>";
 								$i++;
 							}
 							else{
-								echo "<div class=\"item\"><img class=\"img-responsive\" src=".$img_array[$i]."> </div>";
+								echo "<div class=\"item\"><img style=\"width:100%; height: 100%;\" class=\"img-responsive\" src=".$img_array[$i]."> </div>";
 								$i++;
 							}
 						}
-						echo "</div>";
+					echo "</div>";
 				?>
-				
+
 				<!-- Left and right controls -->
 				<a class="left carousel-control" href="#myCarousel1" data-slide="prev">
 				  <span class="glyphicon glyphicon-chevron-left"></span>
-				  <span class="sr-only">Previous</span>
+				  <span class="fade sr-only">Previous</span>
 				</a>
 				<a class="right carousel-control" href="#myCarousel1" data-slide="next">
 				  <span class="glyphicon glyphicon-chevron-right"></span>
-				  <span class="sr-only">Next</span>
+				  <span class="fade sr-only">Next</span>
 				</a>
 			  </div>
 		  <!-- </div>-->
@@ -386,7 +406,7 @@ $sql->chiudi();
 				$map->renderHTML();
 			?>
 		  <hr>
-		  <?php 
+		  <?php
 			if(isset($_SESSION['Loggato'])){
 			   echo "<form method='post' id='mioform' name=\"mioform\">";
 				if($presente==false){
@@ -397,8 +417,8 @@ $sql->chiudi();
 				}
 				else
 					echo "<h4>Hai già inserito questo luogo nei tuoi preferiti!</h4></br><hr>";
-				
-			  echo "	
+
+			  echo "
 			  <h4>Lascia un tuo commento</h4>
 				<div class=\"form-group\">
 				  <textarea id=\"commento\" name=\"commento\" class=\"form-control\" rows=\"3\" required></textarea>
@@ -410,10 +430,12 @@ $sql->chiudi();
 				require("./Commenti/stampa_commenti.php");
 		  	  echo "</div>";
 			}
-			
+
 		  ?>
 		</div>
+		</div>
 	  </div>
+
 	  <!--<div id="back_to_top"><span class="glyphicon glyphicon-arrow-up"></span></div>-->
 	</div>
 	<!-- GESTIONE FOOTER -->

@@ -44,7 +44,6 @@ $(document).ready(function() {
 				maxlength : 16,
                 equalTo : "#pass"
             }
-     
         },
         // Personalizzimao i mesasggi di errore
         messages: {
@@ -69,6 +68,7 @@ $(document).ready(function() {
 				required: "Campo username obbligatorio!",
 				remote: "L'username è già utilizzato da un altro utente!"
 			}
+			
         },
         // Settiamo il submit handler per la form
         submitHandler: function() {
@@ -102,6 +102,66 @@ $(document).ready(function() {
 			
 		}
 		
-    });	
+    });
+	
+	$('#form3').validate({
+		rules:{
+			pas: {
+				required: true,
+				minlength: 5,
+				maxlength: 16
+			},
+			
+			ripe:{
+				required: true,
+				minlength: 5,
+				maxlength : 16,
+                equalTo : "#pas"
+			}
+		},
+		messages:{
+			pas: {
+                required: "Campo password obbligatorio!",
+                minlength: "La password deve essere lunga minimo 5 caratteri",
+                maxlength: "La password deve essere lunga al massimo 16 caratteri"
+            },
+			ripe: {
+                required: "Conferma password",
+                minlength: "La password deve essere lunga minimo 5 caratteri",
+                maxlength: "La password deve essere lunga al massimo 16 caratteri",
+                equalTo: "La password non corrisponde a quella inserita"
+            }
+		},
+		submitHandler: function() {
+			$('#conferma').click(function(){
+				var pass = $('#pas').val();
+				
+				$.ajax({  
+				  type: "POST",
+				  url: "./dinamiche/controlla.php",  
+				  data: {
+					update: 1,
+					pass: pass
+				  },
+				  dataType: "text",
+				  success: function(response) { 
+					  alert(response);
+					  /*
+					  if(response.includes("aggiornato")){
+						  //alert('cambiata');
+						  //$("#rispo").replaceWith("<label id='rispo'>Password aggiornata con successo!");
+					  }else{
+						  //$("#rispo").replaceWith("<label id='risposta'>Password NON aggiornata!");
+					  }*/
 
+				  },
+				  error: function(){
+					alert("Chiamata fallita, si prega di riprovare...");
+				  }
+				});
+				
+		  	});
+			
+        }
+	});
 });

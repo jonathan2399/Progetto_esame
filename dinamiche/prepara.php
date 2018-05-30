@@ -10,7 +10,8 @@
 		$sql->crea_tbl_ricerca();
 		$sql->crea_tbl_commenti();
 		$sql->crea_tbl_preferiti();
-		$sql->crea_tbl_utenti_admin();
+		//$sql->crea_tbl_utenti_admin();
+		$sql->crea_tbl_cookie();
 		$sql->crea_tbl_bloccati();
 		$sql->chiudi();
 	}catch(SQLException $e){
