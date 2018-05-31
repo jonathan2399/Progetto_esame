@@ -2,6 +2,22 @@
 include("./classi/Sql.php");
 require("./dinamiche/prepara.php");
 session_start();
+if(isset($_COOKIE['SID'])&&isset($_COOKIE['TOKEN'])){
+	$sql = new Sql("localhost","root","","progetto_esame");
+	$result=$sql->ritorna_cookie($_COOKIE['SID']);
+	if($result->num_rows==1){
+		$row = $result->fetch_assoc();
+		if($row['Token']==$_COOKIE['TOKEN']){
+			$result = $sql->ritorna_user($row['Username']);
+			if($result->num_rows>0){
+				$row = $result->fetch_assoc();
+				$_SESSION['Loggato']=1;
+				$_SESSION['User']=$row['Nome'];
+			}
+		}
+	}
+	$sql->chiudi();
+}
 ?>
 <html>
 <head>
@@ -399,7 +415,7 @@ ul.chec-radio li.pz {
 							<div class="sidebar-header">
 								<!--SE LOGGATO VISUALIZZA IL NOME DELL'UTENTE CON MESSAGGIO BENVENUTO-->
 								<br>
-								<h3><?php if(isset($_SESSION['Loggato']))echo "Benvenuto ".$_SESSION['Loggato'];?></h3>
+								<h3><?php if(isset($_SESSION['Loggato']))echo "Benvenuto ".$_SESSION['User'];?></h3>
 							</div>
 
 							<ul class="list-unstyled components">
@@ -599,7 +615,7 @@ ul.chec-radio li.pz {
 							
     					<div class="checkbox">
     						<label>
-    							<input name="ricordami" type="checkbox">Ricordami
+    							<input name="ricordami" id="ricordami" type="checkbox">Ricordami
     						</label>
     					</div> <!-- /.checkbox -->
     				</form>
@@ -743,7 +759,7 @@ ul.chec-radio li.pz {
 				  </div>
 				  <div class='modal-footer'>
 					<button id="conferma" name="conferma" value='conferma' type='submit' class=' btn btn-primary'>Conferma</button>
-					<input id='clo' name="close" value='Close' type='button' class=' btn btn-danger' data-dismiss='modal'></input>
+					<button id='clo' name="close" value='Close' type='button' class=' btn btn-danger' data-dismiss='modal'>Close</button>
 				  </div>
 			   </form>
 		      <label id="rispo"></label>

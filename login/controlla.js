@@ -26,7 +26,7 @@ $(document).ready(function(){
 			var password = $('#password').val();
 		    var ricordami=0;
 		
-			if ($("#idcampocheckboxes").is(":not(:checked)")){ 
+			if ($("#ricordami").is(":not(:checked)")){ 
 				ricordami=0;
 			} else {
 				ricordami=1;
@@ -139,8 +139,9 @@ $(document).ready(function(){
 		  data: {
 			esci: 1
 		  },
-		  success: function() { 
+		  success: function(response) { 
 			  //RICARICA LA PAGINA PERFARSI CHE SIA IL PHP HA CONTROLLARE SE L'UTENTE E' LOGGATO O NO
+			  alert(response);
 			  window.location.reload();
 		  },
 		  error: function(){

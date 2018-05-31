@@ -133,35 +133,23 @@ $(document).ready(function() {
             }
 		},
 		submitHandler: function() {
-			$('#conferma').click(function(){
-				var pass = $('#pas').val();
-				
-				$.ajax({  
-				  type: "POST",
-				  url: "./dinamiche/controlla.php",  
-				  data: {
-					update: 1,
-					pass: pass
-				  },
-				  dataType: "text",
-				  success: function(response) { 
-					  alert(response);
-					  /*
-					  if(response.includes("aggiornato")){
-						  //alert('cambiata');
-						  //$("#rispo").replaceWith("<label id='rispo'>Password aggiornata con successo!");
-					  }else{
-						  //$("#rispo").replaceWith("<label id='risposta'>Password NON aggiornata!");
-					  }*/
-
-				  },
-				  error: function(){
-					alert("Chiamata fallita, si prega di riprovare...");
-				  }
-				});
-				
-		  	});
-			
+			var pass = $('#pas').val();
+			$.ajax({  
+			  type: "POST",
+			  url: "./dinamiche/controlla.php",  
+			  data: {
+				update: 1,
+				pass: pass
+			  },
+			  dataType: "text",
+			  success: function(response){ 
+				  $(':input', '#form3').val('');
+				  alert(response);
+			  },
+			  error: function(){
+				alert("Chiamata fallita, si prega di riprovare...");
+			  }
+			});
         }
 	});
 });

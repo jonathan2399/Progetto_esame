@@ -274,7 +274,7 @@ class Sql{
 	
 	function preleva_cookie($id){
 		mysqli_escape_string($this->connect,$id);
-		$comando = " SELECT * FROM COOKIE WHERE SessionId = '".$sid."'";
+		$comando = " SELECT * FROM COOKIE WHERE SessionId = '".$id."'";
 		$result = $this->connect->query($comando);
 		if ($result->num_rows > 0)
 			return true;
@@ -282,13 +282,33 @@ class Sql{
 			return false;
 	}
 	
-	function inserisci_cookie($sid,$token,$user){
+	function ritorna_cookie($id){
 		mysqli_escape_string($this->connect,$id);
-		$comando = "INSERT INTO COOKIE (SessionId,Token,Username) VALUES ('".$sid."','".$token."','".$user."')";
+		$comando = " SELECT * FROM COOKIE WHERE SessionId = '".$id."'";
+		if($this->connect->query($comando))
+			return $this->connect->query($comando);
+	}
+	
+	function inserisci_cookie($id,$token,$user){
+		mysqli_escape_string($this->connect,$id);
+		$comando = "INSERT INTO COOKIE (SessionId,Token,Username) VALUES ('".$id."','".$token."','".$user."')";
 		if($this->connect->query($comando))
 			return true;
 		else
 			return false;
+	}
+	
+	function elimina_cookie($id){
+		mysqli_escape_string($this->connect,$id);
+		$comando = "DELETE FROM COOKIE WHERE SessionId='".$id."'";
+		if($this->connect->query($comando))
+			return $this->connect->query($comando);
+	}
+	
+	function ritorna_user($user){
+		$comando = "SELECT Nome FROM UTENTI WHERE Username='".$user."' ";
+		if($this->connect->query($comando))
+			return $this->connect->query($comando);
 	}
 	
 	function aggiorna_pass($pass,$user){
@@ -543,7 +563,7 @@ class Sql{
 		$this->connect->close();
 	}
 
-	//FUNZIONI LATO AMMINISTRATORE
+	//FUNZIONI LATO AMMINISTRATORE -----------------------------------------------------------------------------------------
 	function ritorna_ricerche(){
 		$comando="SELECT DATE_FORMAT(Data,'%M') AS data, COUNT(*) AS ricerche FROM RICERCA GROUP BY MONTH(Data)";
 		if($this->connect->query($comando)==TRUE)

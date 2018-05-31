@@ -1,6 +1,8 @@
 <style>
 .scroll{
-	overflow: auto;
+	overflow-y: auto;
+	overflow-x: hidden;
+	height: 10px;
 }
 </style>
 <?php
