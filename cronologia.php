@@ -242,7 +242,7 @@ else if(isset($_REQUEST['tutte'])){
 							$data = $row['Data'];
 							$ora = $row['Ora'];
 							$query = $row['Query'];
-							$luogo = $row['Luogo'];
+							$luogo = $row['Ricercato'];
 							echo "
 							<tr class='riga' id='$id'>
 								 <td align='center'>

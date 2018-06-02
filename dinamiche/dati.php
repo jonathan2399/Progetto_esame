@@ -6,14 +6,56 @@
 	<meta name="viewport" content="width=device-width,initial-scale=1">
 	<meta http-equiv="X-UA-Compatible" content="IE=Edge">
 	<link rel="stylesheet" href="../style.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	
+	<style>
+		.loader {
+		  border: 16px solid #f3f3f3;
+		  border-radius: 50%;
+		  border-top: 16px solid rgb(100,100,100);
+		  border-right: 16px solid #337AB7;
+		  border-bottom: 16px solid rgb(100,100,100);
+		  border-left: 16px solid #337AB7;
+		  width: 120px;
+		  height: 120px;
+		  -webkit-animation: spin 1s linear infinite;
+		  animation: spin 1s linear infinite;
+		}
+
+		@-webkit-keyframes spin {
+		  0% { -webkit-transform: rotate(0deg); }
+		  100% { -webkit-transform: rotate(360deg); }
+		}
+
+		@keyframes spin {
+		  0% { transform: rotate(0deg); }
+		  100% { transform: rotate(360deg); }
+		}
+		
+		#page{
+			overflow-x: hidden;
+			overflow-y: auto;
+		}
+	</style>
 </head>
 <body>
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 	<script>
+		$(window).on('load',function(){
+			$('#loading_screen').fadeOut("fast",function(){
+				$("#page").css("visibility","visible");
+				$('#page').fadeIn();
+				
+			});
+		});
+		
 		$(document).ready(function(){
+			$("#page").fadeOut("fast");
+			$('#loading_screen').fadeIn("slow");
+			
 			var id = getUrlVars()["page"];
 			$("li#"+id).addClass("active");
-			
 			function getUrlVars() {
 				var vars = {};
 				var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {
@@ -23,16 +65,25 @@
 			}
 		});
 	</script>
+	
+	<div style="background-color: rgb(255, 163, 26); color: white;" id="loading_screen">
+	  <center>
+	  <h1>Attendi</h1>
+	  <p>La pagina &egrave; in caricamento<br/>
+	  Resta connesso e non cambiare sito!</p>
+	  <div id="loader" class="loader"></div></center>
+	</div>
+	<div id="page">
 	<div class="text-white text-center" style="background: rgb(255, 163, 26); ">
-		<div class="row">
+		<div id="inte" class="row">
 			<div class="col-md-4">
 				</br>
 			    </br>
-				<a href="../index.php"><button name="home" class="btn btn-primary">TORNA ALLA HOME</button></a>
+				<a href="../index.php"><button id="home" name="home" class="btn btn-primary">TORNA ALLA HOME</button></a>
 			</div>
 			<div class="col-md-4 container">
 				<h1 class="display-1">Ecco i risultati</h1>
-				<p class="lead">Clicca sull'immagine per vedere il posto</p>
+				<p id="t" class="lead">Clicca sull'immagine per vedere il posto</p>
 			</div>
 		</div>
 	</div>
@@ -96,7 +147,7 @@
 		$map->renderHTML();
 		
 	?>
-	<div class="container">
+	<div id="container" class="container">
 		<?php
 			$result = $sql->restituisci_risultati($paese,$query,$pageid,$total);
 			if($result->num_rows>0){
@@ -104,11 +155,11 @@
 				while($row = $result->fetch_assoc()){
 					if($c%3==0)
 						echo("<div id=\"riga\" class=\"row\">");
-
+						$img=$row['Immagine'];
 						echo("<div class=\"col-lg-4 col-sm-6\">");
 							echo("<div id=\"elemento\" class=\"card-h-100\">");
 								echo "<div class=\"card img-fluid\">";
-									echo("<a href=\"luogo.php?id=".$row["Id_dato"]. "\" class=\"val\"  id=".$row["Id_dato"]. " ><img src=" . $row["Immagine"] ." width=\"330px\" height=\"270px\" class=\"card-img-top\"><div class=\"overlay\"><p>CLICCAMI</p></div></a>");
+									echo("<a href=\"luogo.php?id=".$row["Id_dato"]. "\" class=\"val\"  id=".$row["Id_dato"]. " ><img src=\"$img\" width=\"330px\" height=\"270px\" class=\"card-img-top\"><div class=\"overlay\"><p>CLICCAMI</p></div></a>");
 								echo "</div>";
 
 								echo("<div  class=\"card-body text-center\">");
@@ -130,10 +181,11 @@
 	</div>
 	
 	<!--Footer-->
+	
 	<footer class="page-footer font-small blue pt-4 mt-4">
 		<!--Footer Links-->
 		<div class="container-fluid text-center text-md-left" style="background-color: rgb(100,100,100); color: white; ">
-			<div class="row">
+			<div id="pa" class="row">
 				<div id="page-selection"></div>
 				<?php
 					//PAGINATION 
@@ -150,10 +202,10 @@
 							echo("</li>");
 							//NUMERI DI PAGINA
 							for($i=1;$i<$total_pages+1;$i++){
-								if($i==1)
-									echo("<li id='$i' class=\"page-item\"><a class=\"page-link active\" href='dati.php?page=$i&paese=$paese&query=$query' >" . $i . "</a></li>");
-								else
-									echo("<li id='$i' class=\"page-item\"><a class=\"page-link \" href='dati.php?page=$i&paese=$paese&query=$query' >" . $i . "</a></li>");
+									if($i==1)
+										echo("<li id='$i' class=\"page-item\"><a class=\"page-link active\" href='dati.php?page=$i&paese=$paese&query=$query' >" . $i . "</a></li>");
+								    else
+										echo("<li id='$i' class=\"page-item\"><a class=\"page-link \" href='dati.php?page=$i&paese=$paese&query=$query' >" . $i . "</a></li>");
 							}
 								
 							echo("<li class=\"page-item\">");
@@ -174,14 +226,13 @@
 		</div>
 		<!--/.Footer Links-->
 		<!--Copyright-->
-		<div class="footer-copyright py-3 text-center" style="background-color: rgb(100,100,100); color: white; ">
+		<div id="fo" class="footer-copyright py-3 text-center" style="background-color: rgb(100,100,100); color: white; ">
 			© 2018 Copyright:
 			<a href="https://mdbootstrap.com/material-design-for-bootstrap/"> MDBootstrap.com </a>
 		</div>
 		<!--/.Copyright-->
 	</footer>
+	</div>
 	<!--/.Footer-->
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </body>
 </html>

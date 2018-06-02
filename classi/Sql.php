@@ -70,19 +70,19 @@ class Sql{
 	    if($this->connect->query($comando)==TRUE)
 			return true;
 	}
-	
+
 	function crea_tbl_cookie(){
 		$comando="CREATE TABLE IF NOT EXISTS COOKIE(
 		Username VARCHAR(20) NOT NULL,
-		SessionId TEXT NOT NULL,
-		Token TEXT NOT NULL,
+		SessionId VARCHAR(20) NOT NULL,
+		Token VARCHAR(20) NOT NULL,
 		PRIMARY KEY(SessionId),
 		CONSTRAINT Chiaveesterna15 FOREIGN KEY(Username) REFERENCES UTENTI(Username)
 		)";
 		if($this->connect->query($comando)==TRUE)
 			return true;
 	}
-	
+
 	/*
 	function crea_tbl_utenti_admin(){
 		$comando="CREATE TABLE IF NOT EXISTS UTENTI_ADMIN(
@@ -211,7 +211,7 @@ class Sql{
 		$result=$this->connect->query($comando);
 		if($result->num_rows > 0){
 			 $row = $result->fetch_assoc();
-			
+
 			 return $row['Luogo'];
 		}else{
 			 return false;
@@ -271,7 +271,7 @@ class Sql{
 		else
 			return false;
 	}
-	
+
 	function preleva_cookie($id){
 		mysqli_escape_string($this->connect,$id);
 		$comando = " SELECT * FROM COOKIE WHERE SessionId = '".$id."'";
@@ -281,14 +281,14 @@ class Sql{
 		else
 			return false;
 	}
-	
+
 	function ritorna_cookie($id){
 		mysqli_escape_string($this->connect,$id);
 		$comando = " SELECT * FROM COOKIE WHERE SessionId = '".$id."'";
 		if($this->connect->query($comando))
 			return $this->connect->query($comando);
 	}
-	
+
 	function inserisci_cookie($id,$token,$user){
 		mysqli_escape_string($this->connect,$id);
 		$comando = "INSERT INTO COOKIE (SessionId,Token,Username) VALUES ('".$id."','".$token."','".$user."')";
@@ -297,20 +297,20 @@ class Sql{
 		else
 			return false;
 	}
-	
+
 	function elimina_cookie($id){
 		mysqli_escape_string($this->connect,$id);
 		$comando = "DELETE FROM COOKIE WHERE SessionId='".$id."'";
 		if($this->connect->query($comando))
 			return $this->connect->query($comando);
 	}
-	
+
 	function ritorna_user($user){
-		$comando = "SELECT Nome FROM UTENTI WHERE Username='".$user."' ";
+		$comando = "SELECT Nome,Username,Password FROM UTENTI WHERE Username='".$user."'";
 		if($this->connect->query($comando))
 			return $this->connect->query($comando);
 	}
-	
+
 	function aggiorna_pass($pass,$user){
 		mysqli_escape_string($this->connect,$pass);
 		mysqli_escape_string($this->connect,$user);
@@ -454,7 +454,7 @@ class Sql{
 		mysqli_escape_string($this->connect,$user);
 		mysqli_escape_string($this->connect,$query);
 		mysqli_escape_string($this->connect,$luogo);
-		$comando = "INSERT INTO RICERCA(Username,Data,Ora,Query,Id_luogo) VALUES ('".$user."',NOW(),NOW(),'".$query."',(SELECT Id_luogo FROM LUOGHI WHERE Luogo='".$luogo."'))";
+		$comando = "INSERT INTO RICERCA(Username,Data,Ora,Query,Id_luogo) VALUES ('".$user."',NOW(),NOW(),'".$query."',(SELECT Id_luogo FROM LUOGHI WHERE Luogo LIKE '%".$luogo."%' OR Provincia LIKE '%".$luogo."%' OR Ricercato LIKE '%".$luogo."%'))";
 	    if($this->connect->query($comando)==false)
 			return "RECORD NON CREATO";
 	}
@@ -529,7 +529,7 @@ class Sql{
 
 	function stampa_preferiti($user){
 		mysqli_escape_string($this->connect,$user);
-		$comando = "SELECT * FROM PREFERITI JOIN DATI ON PREFERITI.Id_dato=DATI.Id_dato WHERE Username='".$user."' ORDER BY Id_preferito DESC";
+		$comando = "SELECT * FROM PREFERITI JOIN DATI ON PREFERITI.Id_dato=DATI.Id_dato JOIN LUOGHIDATI ON LUOGHIDATI.Id_dato=DATI.Id_dato JOIN LUOGHI ON LUOGHI.Id_luogo=LUOGHIDATI.Id_luogo WHERE Username='".$user."' ORDER BY Id_preferito DESC";
 		if($this->connect->query($comando)==TRUE)
 			return $this->connect->query($comando);
 		else
@@ -648,7 +648,7 @@ class Sql{
 		else
 			return false;
 	}
-	
+
 	function ritorna_bloccato($id){
 		mysqli_escape_string($this->connect,$id);
 		$comando = "SELECT*FROM BLOCCATI WHERE Username='".$id."'";
@@ -659,7 +659,7 @@ class Sql{
 		}else
 			return false;
 	}
-	
+
 	function ritorna_sbloccato($id){
 		mysqli_escape_string($this->connect,$id);
 		$comando = "SELECT*FROM UTENTI WHERE Username='".$id."'";
@@ -668,7 +668,7 @@ class Sql{
 		else
 			return false;
 	}
-	
+
 	function return_n_comments(){
 		$comando = "SELECT COUNT(*) AS total FROM COMMENTI";
 		if($this->connect->query($comando))
@@ -676,7 +676,7 @@ class Sql{
 		else
 			return false;
 	}
-	
+
 	function return_n_users(){
 		$comando = "SELECT COUNT(*) AS total FROM UTENTI";
 		if($this->connect->query($comando))
@@ -684,7 +684,7 @@ class Sql{
 		else
 			return false;
 	}
-	
+
 	function abilita_constraints(){
 		$comando = "ALTER TABLE UTENTI CHECK CONSTRAINT ALL";
 		if($this->connect->query($comando))
@@ -692,14 +692,14 @@ class Sql{
 		else
 			return false;
 	}
-	
+
 	function disabilita_constraints(){
 		$comando = "ALTER TABLE UTENTI NOCHECK CONSTRAINT ALL";
 		if($this->connect->query($comando))
 			return true;
 		else
 			return false;
-		
+
 	}
 };
 ?>

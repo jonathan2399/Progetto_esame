@@ -8,6 +8,7 @@
   margin-left: 0;
   mergin-top:0;
   margin-right: 0;
+  visibility: hidden;
 }
 
 /* GESTIONE DELLA NAV */
@@ -338,10 +339,13 @@ Tablet
 	}
 
 	#footer{
-		margin-top: auto;
+		/*margin-top: auto;
 		margin-bottom: 0;
+		/*position: fixed;*/
 		position: fixed;
 		overflow-x: hidden;
+		bottom: 0;
+		width: 100%;
 		/*background-color: rgb(158,158,158);*/
 	}
 
@@ -371,4 +375,5 @@ Tablet
 	#inner{
 		height: 200px;
 	}
+	
 }

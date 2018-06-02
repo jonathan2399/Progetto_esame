@@ -22,10 +22,11 @@
 	else
 		$citta="Bergamo";
 	
-	if((isset($_REQUEST['query'])&&isset($_REQUEST['citta'])&&isset($_REQUEST['cerca']))||(isset($_REQUEST['cat']))){
+	if((isset($_REQUEST['query'])&&isset($_REQUEST['citta'])&&isset($_REQUEST['cerca']))||(isset($_REQUEST['cat'])&&isset($_REQUEST['citta']))){
 		//SE QUERY, CITTA E BOTTONE CERCA SONO SETTATI O CA E' SETATO ALLORA CONTROLLA SE SONO PRESENTI NEL DATABASE ALTRIMENTI EFFETTUA RICHIESTE HTTP
 		$cerca->set_query($_REQUEST['query']);
-		$cerca->set_key("AIzaSyBGDSOx9gv_SMDpFlhUe7w43C7RG7423Tk");
+		$cerca->set_key("AIzaSyDUhKCHh3_iQVo7Id2h5X14_bOG8NcXTfM");
+		//AIzaSyBGDSOx9gv_SMDpFlhUe7w43C7RG7423Tk
 		//CONTROLLA SE SONO PRESENTI GLI ELEMENTI IN BASE AI PARAMETRI INSERITI DALL'UTENTE
 		$presenti = $sql->controlla_elementi($cerca->get_paese(),$cerca->get_query());
 		
@@ -41,7 +42,6 @@
 
 			//SE RICHIESTA VA A BUON FINE
 			if($mex==null){
-
 				$response = $cerca->get_output();
 				if($response['status']=='OK'){
 					$cerca->set_info($response['results']);
@@ -107,9 +107,12 @@
 		if($mex==null){
 		   //INSERISCI RICERCA CON DATA E ORARIO CORRISPONDENTE SE L'UTENTE è LOGGATO
 		   $presenti=$cerca->get_paese();
-		   if(isset($_SESSION['Loggato']))
-			  $sql->cronologia($_SESSION['User'],$cerca->get_query(),$cerca->get_paese());
-		   
+		   if(isset($_SESSION['Loggato'])){
+			   if(!isset($_REQUEST['cat']))
+			  	  $sql->cronologia($_SESSION['User'],$cerca->get_query(),$cerca->get_paese());
+			   else
+				   $sql->cronologia($_SESSION['User'],$_REQUEST['cat'],$cerca->get_paese());
+		   }
 		   $presenti=str_replace(' ','%20',$presenti);
 		   header("Location: dati.php?page=1&paese=".$cerca->get_paese()."&query=".$cerca->get_query());
 		}else{

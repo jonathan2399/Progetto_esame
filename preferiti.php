@@ -239,7 +239,7 @@ else if(isset($_REQUEST['tutte'])){
 							$id = $row['Id_preferito'];
 							$id_dato = $row['Id_dato'];
 							$nome = $row['Nome'];
-							$citta = $row['Citta'];
+							$citta = $row['Luogo'];
 							
 							echo "
 							<tr class='riga' id='$id'>

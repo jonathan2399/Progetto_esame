@@ -11,8 +11,7 @@ if(isset($_COOKIE['SID'])&&isset($_COOKIE['TOKEN'])){
 			$result = $sql->ritorna_user($row['Username']);
 			if($result->num_rows>0){
 				$row = $result->fetch_assoc();
-				$_SESSION['Loggato']=1;
-				$_SESSION['User']=$row['Nome'];
+				$_SESSION['Loggato']=$row['Nome'];
 			}
 		}
 	}
@@ -33,293 +32,310 @@ if(isset($_COOKIE['SID'])&&isset($_COOKIE['TOKEN'])){
   	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 	<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.14.0/jquery.validate.min.js"></script>
 	<script type="text/javascript" src="controlli.js"></script>
-</head>
-<script>
-	$(document).ready(function () {
-		$("#cerca").click(function(){
-			$("#mioform").validate({
-				rules:{
-						citta: {
-							required: true
-						},
 
-						query:{
-							required: true
-						}
-				},
+	<style>
 
-				messages: {
-						citta: "Inserisci un luogo!",
-						query: "Inserisci cosa vuoi cercare!"
-				}
-			});
-		});
+	#form1 label.error {
+	   color: #f33;
+	   padding: 0;
+	   margin: 2px 0 0 0;
+	   font-size: 13px;
+	   padding-left: 18px;
+	   background-position: 0 0;
+	   background-repeat: no-repeat;
+	}
 
-		$('.cat').click(function(){
-			var c = $('#citta').val();
-			if(c==" ")
-				c="Bergamo";
+	#form3 label.error {
+	   color: #f33;
+	   padding: 0;
+	   margin: 2px 0 0 0;
+	   font-size: 13px;
+	   padding-left: 18px;
+	   background-position: 0 0;
+	   background-repeat: no-repeat;
+	}
 
-			var q = $(this).attr('id');
-			var url = "./dinamiche/trova.php?cat=1&query=" + q + "&citta="+c;
-			url = url.replace(/ /gi,"%20");
-			window.location = url;
-		});
+	#form label.error {
+	   color: #f33;
+	   padding: 0;
+	   margin: 2px 0 0 0;
+	   font-size: 13px;
+	   padding-left: 18px;
+	   background-position: 0 0;
+	   background-repeat: no-repeat;
+	}
 
-		$(".cat").hover(function(){
-			$(this).css("opacity", "0.5");
-			}, function(){
-			$(this).css("opacity", "1");
-    	});
-
-	});
-</script>
-<style>
-
-#form1 label.error {
-   color: #f33;
-   padding: 0;
-   margin: 2px 0 0 0;
-   font-size: 13px;
-   padding-left: 18px;
-   background-position: 0 0;
-   background-repeat: no-repeat;
-}
-
-#form3 label.error {
-   color: #f33;
-   padding: 0;
-   margin: 2px 0 0 0;
-   font-size: 13px;
-   padding-left: 18px;
-   background-position: 0 0;
-   background-repeat: no-repeat;
-}
-	
-#form label.error {
-   color: #f33;
-   padding: 0;
-   margin: 2px 0 0 0;
-   font-size: 13px;
-   padding-left: 18px;
-   background-position: 0 0;
-   background-repeat: no-repeat;
-}
-	
-#mioform label.error {
-   color: #f33;
-   padding: 0;
-   margin: 2px 0 0 0;
-   font-size: 15px;
-   padding-left: 18px;
-   background-position: 0 0;
-   background-repeat: no-repeat;
-}
+	#mioform label.error {
+	   color: #f33;
+	   padding: 0;
+	   margin: 2px 0 0 0;
+	   font-size: 15px;
+	   padding-left: 18px;
+	   background-position: 0 0;
+	   background-repeat: no-repeat;
+	}
 
 
 
-/* BOTTONE MENU LATERALE */
-#sidebarCollapse{
-	background-color: #337AB7;
-	padding: 15px;
-	margin-right: 20px;
-	font-size: 15px;
-	margin-top: 25px;
-}
-
-@media (max-width: 767px){
-
+	/* BOTTONE MENU LATERALE */
 	#sidebarCollapse{
 		background-color: #337AB7;
-		padding: 9px;
-		margin-left: 225px;
-		font-size: 12px;
-		margin-top: 50px;
+		padding: 15px;
+		margin-right: 20px;
+		font-size: 15px;
+		margin-top: 25px;
 	}
-}
 
-/* ---------------------------------------------------
-    SIDEBAR STYLE
------------------------------------------------------ */
-#sidebar {
-    width: 250px;
-    position: fixed;
-    top: 0;
-    right: -250px;
-    height: 100vh;
-    z-index: 999;
-    background-color: rgb(170,170,170);
-    color: #fff;
-    transition: all 0.3s;
-    overflow-y: scroll;
-    box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.2);
-}
+	@media (max-width: 767px){
 
-#sidebar.active {
-    right: 0;
-}
+		#sidebarCollapse{
+			background-color: #337AB7;
+			padding: 9px;
+			margin-left: 225px;
+			font-size: 12px;
+			margin-top: 50px;
+		}
+	}
 
-#dismiss {
-    width: 35px;
-    height: 35px;
-    line-height: 35px;
-    text-align: center;
-    background-color: rgb(170,170,170);
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    cursor: pointer;
-    -webkit-transition: all 0.3s;
-    -o-transition: all 0.3s;
-    transition: all 0.3s;
-}
-#dismiss:hover {
-    background: #fff;
-    color: #7386D5;
-}
+	/* ---------------------------------------------------
+		SIDEBAR STYLE
+	----------------------------------------------------- */
+	#sidebar {
+		width: 250px;
+		position: fixed;
+		top: 0;
+		right: -250px;
+		height: 100vh;
+		z-index: 999;
+		background-color: rgb(170,170,170);
+		color: #fff;
+		transition: all 0.3s;
+		overflow-y: scroll;
+		box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.2);
+	}
 
-#sidebar .sidebar-header {
-    padding: 20px;
-    background-color: rgb(170,170,170);
-}
+	#sidebar.active {
+		right: 0;
+	}
 
-#sidebar ul.components {
-    padding: 20px 0;
-    border-bottom: 1px solid #47748b;
-}
+	#dismiss {
+		width: 35px;
+		height: 35px;
+		line-height: 35px;
+		text-align: center;
+		background-color: rgb(170,170,170);
+		position: absolute;
+		top: 10px;
+		left: 10px;
+		cursor: pointer;
+		-webkit-transition: all 0.3s;
+		-o-transition: all 0.3s;
+		transition: all 0.3s;
+	}
+	#dismiss:hover {
+		background: #fff;
+		color: #7386D5;
+	}
 
-#sidebar ul p {
-    color: #fff;
-    padding: 10px;
-}
+	#sidebar .sidebar-header {
+		padding: 20px;
+		background-color: rgb(170,170,170);
+	}
 
-#sidebar ul li a {
-    padding: 10px;
-    font-size: 1.1em;
-    display: block;
-}
-#sidebar ul li a:hover {
-    color: #7386D5;
-    background: #fff;
-}
+	#sidebar ul.components {
+		padding: 20px 0;
+		border-bottom: 1px solid #47748b;
+	}
 
-#sidebar ul li.active > a, a[aria-expanded="true"] {
-    color: #fff;
-    background: #6d7fcc;
-}
+	#sidebar ul p {
+		color: #fff;
+		padding: 10px;
+	}
 
+	#sidebar ul li a {
+		padding: 10px;
+		font-size: 1.1em;
+		display: block;
+	}
+	#sidebar ul li a:hover {
+		color: #7386D5;
+		background: #fff;
+	}
 
-a[data-toggle="collapse"] {
-    position: relative;
-}
-
-a[aria-expanded="false"]::before, a[aria-expanded="true"]::before {
-    content: '\e259';
-    display: block;
-    position: absolute;
-    right: 20px;
-    font-family: 'Glyphicons Halflings';
-    font-size: 0.6em;
-}
-a[aria-expanded="true"]::before {
-    content: '\e260';
-}
+	#sidebar ul li.active > a, a[aria-expanded="true"] {
+		color: #fff;
+		background: #6d7fcc;
+	}
 
 
-ul ul a {
-    font-size: 0.9em !important;
-    padding-left: 30px !important;
-    background: #6d7fcc;
-}
+	a[data-toggle="collapse"] {
+		position: relative;
+	}
 
-ul.CTAs {
-    padding: 20px;
-}
+	a[aria-expanded="false"]::before, a[aria-expanded="true"]::before {
+		content: '\e259';
+		display: block;
+		position: absolute;
+		right: 20px;
+		font-family: 'Glyphicons Halflings';
+		font-size: 0.6em;
+	}
+	a[aria-expanded="true"]::before {
+		content: '\e260';
+	}
 
-ul.CTAs a {
-    text-align: center;
-    font-size: 0.9em !important;
-    display: block;
-    border-radius: 5px;
-    margin-bottom: 5px;
-}
-a.download {
-    background: #fff;
-    color: #7386D5;
-}
-a.article, a.article:hover {
-    background: #6d7fcc !important;
-    color: #fff !important;
-}
 
-	
-/*STYLE DELLA SELECT PER RICHIESTA DI SBLOCCO*/
-ul.chec-radio {
-    margin: 15px;
-}
-ul.chec-radio li.pz {
-    display: inline;
-}
-.chec-radio label.radio-inline input[type="checkbox"] {
-    display: none;
-}
-.chec-radio label.radio-inline input[type="checkbox"]:checked+div {
-    color: #fff;
-    background-color: #000;
-}
-.chec-radio .radio-inline .clab {
-    cursor: pointer;
-    background: #e7e7e7;
-    padding: 7px 20px;
-    text-align: center;
-    text-transform: uppercase;
-    color: #333;
-    position: relative;
-    height: 34px;
-    float: left;
-    margin: 0;
-    margin-bottom: 5px;
-}
-.chec-radio label.radio-inline input[type="checkbox"]:checked+div:before {
-    content: "\e013";
-    margin-right: 5px;
-    font-family: 'Glyphicons Halflings';
-}
-.chec-radio label.radio-inline input[type="radio"] {
-    display: none;
-}
-.chec-radio label.radio-inline input[type="radio"]:checked+div {
-    color: #fff;
-    background-color: #000;
-}
-.chec-radio label.radio-inline input[type="radio"]:checked+div:before {
-    content: "\e013";
-    margin-right: 5px;
-    font-family: 'Glyphicons Halflings';
-}
+	ul ul a {
+		font-size: 0.9em !important;
+		padding-left: 30px !important;
+		background: #6d7fcc;
+	}
 
-</style>
+	ul.CTAs {
+		padding: 20px;
+	}
+
+	ul.CTAs a {
+		text-align: center;
+		font-size: 0.9em !important;
+		display: block;
+		border-radius: 5px;
+		margin-bottom: 5px;
+	}
+	a.download {
+		background: #fff;
+		color: #7386D5;
+	}
+	a.article, a.article:hover {
+		background: #6d7fcc !important;
+		color: #fff !important;
+	}
+
+
+	/*STYLE DELLA SELECT PER RICHIESTA DI SBLOCCO*/
+	ul.chec-radio {
+		margin: 15px;
+	}
+	ul.chec-radio li.pz {
+		display: inline;
+	}
+	.chec-radio label.radio-inline input[type="checkbox"] {
+		display: none;
+	}
+	.chec-radio label.radio-inline input[type="checkbox"]:checked+div {
+		color: #fff;
+		background-color: #000;
+	}
+	.chec-radio .radio-inline .clab {
+		cursor: pointer;
+		background: #e7e7e7;
+		padding: 7px 20px;
+		text-align: center;
+		text-transform: uppercase;
+		color: #333;
+		position: relative;
+		height: 34px;
+		float: left;
+		margin: 0;
+		margin-bottom: 5px;
+	}
+	.chec-radio label.radio-inline input[type="checkbox"]:checked+div:before {
+		content: "\e013";
+		margin-right: 5px;
+		font-family: 'Glyphicons Halflings';
+	}
+	.chec-radio label.radio-inline input[type="radio"] {
+		display: none;
+	}
+	.chec-radio label.radio-inline input[type="radio"]:checked+div {
+		color: #fff;
+		background-color: #000;
+	}
+	.chec-radio label.radio-inline input[type="radio"]:checked+div:before {
+		content: "\e013";
+		margin-right: 5px;
+		font-family: 'Glyphicons Halflings';
+	}
+
+	.loader {
+	  border: 16px solid #f3f3f3;
+	  border-radius: 50%;
+	  border-top: 16px solid rgb(100,100,100);
+	  border-right: 16px solid #337AB7;
+	  border-bottom: 16px solid rgb(100,100,100);
+	  border-left: 16px solid #337AB7;
+	  width: 120px;
+	  height: 120px;
+	  -webkit-animation: spin 1s linear infinite;
+	  animation: spin 1s linear infinite;
+	}
+
+	@-webkit-keyframes spin {
+	  0% { -webkit-transform: rotate(0deg); }
+	  100% { -webkit-transform: rotate(360deg); }
+	}
+
+	@keyframes spin {
+	  0% { transform: rotate(0deg); }
+	  100% { transform: rotate(360deg); }
+	}
+
+	</style>
+</head>
 <body>
-	<!-- DIV RELATIVO AL CARICAMENTO-->
-	<div style="background-color: blue; color: white;" id="loading_screen">
-	  <h1>Attendi sto ricercando all'interno del mio archivio</h1>
+	<div style="background-color: rgb(255, 163, 26); color: white;" id="loading_screen">
+		<!--visibility: hidden-->
+	  <center>
+	  <h1>Attendi</h1>
 	  <p>La pagina &egrave; in caricamento<br/>
 	  Resta connesso e non cambiare sito!</p>
+	  <div id="loader" class="loader"></div></center>
 	</div>
+	
 	<!-- SCRIPT CHE SI OCCUPA DELL'AUTOCOMPLETE TRAMITE API DI GOOGLE MAPS -->
 	<script>
 		function mostra(){
-			/*
 			var citta = $('#citta').val();
 			var query = $('#query').val();
-			if(citta!=""&&query!="")*/
-			$("#loading_screen").fadeOut("slow");
-			//document.getElementById("#loading_screen").style.display = 'block';
+			if(citta!==""||query!==""){
+				$("#page").fadeOut("fast");
+				$("#loading_screen").fadeIn("fast");
+			}else{
+				alert("Ti mancano i parametri");
+			}
 		}
 		
+		$(window).on('load',function(){
+			$('#loading_screen').fadeOut("fast",function(){
+				$("#page").css("visibility","visible");
+				$("#page").fadeIn("fast");
+			});
+		});
+		
 		$(document).ready(function(){
-			//FUNZIONE CHE APPARE NEL CARICAMENTO DEI DATI
+			$("#page").fadeOut("fast");
+			$('#loading_screen').fadeIn("fast");
+			
+			$('.cat').click(function(){
+				var c = $('#citta').val();
+				if(c!==""){
+					$("#page").fadeOut("fast");
+					$("#loading_screen").fadeIn("fast");
+					var q = $(this).attr('id');
+					var url = "./dinamiche/trova.php?cat=1&query=" + q + "&citta="+c;
+					url = url.replace(/ /gi,"%20");
+					window.location = url;
+				}else{
+					alert("Inserisci un luogo!");
+				}
+			});
 
+			$(".cat").hover(function(){
+				$(this).css("opacity", "0.5");
+				}, function(){
+				$(this).css("opacity", "1");
+			});
+			
 			//FUNZIONE PER L'AUTOCOMPLETE NELLE QUERY DA CERCARE-->
 			$( function() {
 			var availableTags = [
@@ -396,7 +412,6 @@ ul.chec-radio li.pz {
 		  google.maps.event.addDomListener(window, 'load', init);
 		});
 	</script>
-
 	<div id="page">
 		<header>
 
@@ -415,7 +430,7 @@ ul.chec-radio li.pz {
 							<div class="sidebar-header">
 								<!--SE LOGGATO VISUALIZZA IL NOME DELL'UTENTE CON MESSAGGIO BENVENUTO-->
 								<br>
-								<h3><?php if(isset($_SESSION['Loggato']))echo "Benvenuto ".$_SESSION['User'];?></h3>
+								<h3><?php if(isset($_SESSION['Loggato']))echo "Benvenuto ".$_SESSION['Loggato'];?></h3>
 							</div>
 
 							<ul class="list-unstyled components">
@@ -489,6 +504,7 @@ ul.chec-radio li.pz {
 
 			<!-- GESTIONE CONTENITORE PER INSERIRE I PARAMETRI -->
 			<div class="overlay"></div>
+			<center>
 			<div class="container1">
 				<div class="row">
 					<div class="col-md-8 col-md-offset-2 text-center">
@@ -513,6 +529,7 @@ ul.chec-radio li.pz {
 					</div>
 				</div>
 			</div>
+			</center>
 		</header>
 
 
@@ -578,12 +595,15 @@ ul.chec-radio li.pz {
 
 		<!-- GESTIONE DEL FOOTER -->
 		<!--Footer-->
+		<!--
+		<div class="row">
 		<footer id="footer" class="page-footer font-small blue pt-4 mt-4">
 			<div class="footer-copyright py-3 text-center" style="background-color: rgb(100,100,100); color: white; ">
 				© 2018 Copyright:
 				<a href="https://mdbootstrap.com/material-design-for-bootstrap/"> MDBootstrap.com </a>
 			</div>
 		</footer>
+		</div>-->
 		<!--/.Footer-->
 	</div>
 
@@ -596,23 +616,23 @@ ul.chec-radio li.pz {
 				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
 				<h4 class="modal-title" id="text" >Accesso utente</h4>
 			</div> <!-- /.modal-header -->
-			
+
     			<div class="modal-body">
     			        <form name="form1">
         					<div class="form-group">
         						<div class="input-group">
-        							<input type="text" class="form-control" name="username" id="username" placeholder="Username">
+											<input type='text' class='form-control' name='username' id='username' placeholder='Username'>
         							<label for="username" class="input-group-addon glyphicon glyphicon-user"></label>
         						</div> <!-- /.input-group -->
         					</div> <!-- /.form-group -->
 
         					<div class="form-group">
         					    <div class="input-group">
-        							<input type="password" class="form-control" name="password" id="password" placeholder="Password">
+											<input type='password' class='form-control' name='password' id='password' placeholder='Password'>
         							<label for="password" class="input-group-addon glyphicon glyphicon-lock"></label>
         						</div> <!-- /.input-group -->
         					</div> <!-- /.form-group -->
-							
+
     					<div class="checkbox">
     						<label>
     							<input name="ricordami" id="ricordami" type="checkbox">Ricordami
@@ -790,7 +810,7 @@ ul.chec-radio li.pz {
                     $('.collapse.in').toggleClass('in');
                     $('a[aria-expanded=true]').attr('aria-expanded', 'false');
                 });
-				
+
             });
     </script>
 </body>
