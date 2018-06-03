@@ -18,51 +18,6 @@ include("../classi/Sql.php");
 				});
 			})
 		});
-		
-		function blocca(){
-			var id = $('.blocca').attr('id');
-			$.ajax({
-				method: 'POST',
-				url: './return_data.php',
-				dataType: 'html',
-				data:{
-					blocca: 1,
-					id: id
-				},
-				success: function(risposta){
-					$('tr#'+id).remove();
-					$('.tbl-bloccati').append(risposta);
-
-
-				},
-				error: function(){
-					alert("Chiamata fallita, si prega di riprovare...");
-				}
-
-			});
-		}
-		function sblocca(){
-			var id = $('.sblocca').attr('id');
-			$.ajax({
-				method: 'POST',
-				url: './return_data.php',
-				dataType: 'html',
-				data:{
-					sblocca: 1,
-					id: id
-				},
-				success: function(risposta){
-					$('tr#'+id).remove();
-					$('.tbl-sbloccati').append(risposta);
-
-
-				},
-				error: function(){
-					alert("Chiamata fallita, si prega di riprovare...");
-				}
-
-			});
-		}
 	</script>
     <?php require("./Templates/header.php");?>
     <section id="main">
@@ -73,7 +28,8 @@ include("../classi/Sql.php");
             <!-- Website Overview -->
             <div class="panel panel-default">
               <div class="panel-heading main-color-bg">
-                <h3 class="panel-title">Utenti abilitati</h3>
+                <h3 class="panel-title">Utenti iscritti</h3>
+				<span class='pull-right clickable'><i id='u' class='glyphicon glyphicon-chevron-down'></i></span>
               </div>
               <div class="panel-body">
                 <div class="row">
@@ -82,7 +38,7 @@ include("../classi/Sql.php");
                       </div>
                 </div>
                 <br>
-				<table class="tbl-sbloccati table table-striped table-hover">
+				<table id="tbl_users" class="table table-striped table-hover">
 					<tr>
                         <th>Nome</th>
                         <th>Email</th>
@@ -99,7 +55,6 @@ include("../classi/Sql.php");
 									<td>".$row['Nome']." ".$row['Cognome']."</td>
 									<td>".$row['Email']."</td>
 									<td>".$row['Username']."</td>
-									<td><a onclick='blocca()' id='".$row['Username']."' class='btn btn-danger blocca'>Blocca</a></td>
 								</tr>";
 							}
 						}
@@ -110,7 +65,8 @@ include("../classi/Sql.php");
 			  </br>
 			  <div class="panel panel-default">
               <div class="panel-heading main-color-bg">
-                <h3 class="panel-title">Utenti bloccati</h3>
+                <h3 class="panel-title">Visitatori</h3>
+				<span class='pull-right clickable'><i id='vi' class='glyphicon glyphicon-chevron-down'></i></span>
               </div>
               <div class="panel-body">
                 <div class="row">
@@ -119,23 +75,29 @@ include("../classi/Sql.php");
                       </div>
                 </div>
                 <br>
-				<table class="tbl-bloccati table table-striped table-hover">
+				<table id='tbl_visitors' class="tbl-visitors table table-striped table-hover">
 					<tr>
-                        <th>Nome</th>
-                        <th>Email</th>
-                        <th>User</th>
-                        <th></th>
+						<th>Id_visitatore</th>
+                        <th>Indirizzo_ip</th>
+                        <th>Porta</th>
+                        <th>Host</th>
+						<th>Info</th>
+						<th>Data</th>
+                        <th>Ora</th>
                     </tr>
 					<?php
-						$result=$sql->ritorna_bloccati();
+						$result=$sql->ritorna_visitatori();
 						if($result->num_rows>0){
 							while($row = mysqli_fetch_array($result)){
 								echo "
-								<tr id='".$row['Username']."'>
-									<td>".$row['Nome']." ".$row['Cognome']."</td>
-									<td>".$row['Email']."</td>
-									<td>".$row['Username']."</td>
-									<td><a onclick='sblocca()' id='".$row['Username']."' class='btn btn-default sblocca'>Sblocca</a></td>
+								<tr id='".$row['Id_visitatore']."'>
+									<td>".$row['Id_visitatore']."</td>
+									<td>".$row['Indirizzo_ip']."</td>
+									<td>".$row['Porta']."</td>
+									<td>".$row['Host']."</td>
+									<td>".$row['Info']."</td>
+									<td>".$row['Data']."</td>
+									<td>".$row['Ora']."</td>
 								</tr>";
 							}
 						}
@@ -148,7 +110,6 @@ include("../classi/Sql.php");
         </div>
       </div>
     </section>
-
     <?php require("./Templates/footer.php");?>
   </body>
 </html>

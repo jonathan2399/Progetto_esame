@@ -152,4 +152,46 @@ $(document).ready(function() {
 			});
         }
 	});
+	
+	$('#form2').validate({
+		rules:{
+			us:{
+				required: true
+			},
+			
+			testo:{
+				required: true
+			}
+		},
+		messages:{
+			us: {
+                required: "Campo username obbligatorio!"
+            },
+			
+			testo: {
+                required: "Inserisci del testo"
+            }
+		},
+		submitHandler: function() {
+			var tipo = $('input[name="tipo"]:checked').val();
+			var testo = $('#testo').val();
+			$.ajax({  
+			  type: "POST",
+			  url: "./dinamiche/controlla.php",  
+			  data: {
+				invia: 1,
+				tipo: tipo,
+				testo: testo
+			  },
+			  dataType: "text",
+			  success: function(response){
+				  $(':input', '#form2').val('');
+				  alert(response);
+			  },
+			  error: function(){
+				alert("Chiamata fallita, si prega di riprovare...");
+			  }
+			});
+        }
+	});
 });

@@ -58,19 +58,6 @@ class Sql{
 			return true;
 	}
 
-	function crea_tbl_bloccati(){
-	    $comando="CREATE TABLE IF NOT EXISTS BLOCCATI(
-		Username VARCHAR(20) NOT NULL,
-	    Email VARCHAR(20) NOT NULL,
-	    Nome VARCHAR(20) NOT NULL,
-	    Cognome VARCHAR(20) NOT NULL,
-	    Password VARCHAR(200) NOT NULL,
-	    PRIMARY KEY(Username)
-	    )";
-	    if($this->connect->query($comando)==TRUE)
-			return true;
-	}
-
 	function crea_tbl_cookie(){
 		$comando="CREATE TABLE IF NOT EXISTS COOKIE(
 		Username VARCHAR(20) NOT NULL,
@@ -83,16 +70,31 @@ class Sql{
 			return true;
 	}
 
-	/*
-	function crea_tbl_utenti_admin(){
-		$comando="CREATE TABLE IF NOT EXISTS UTENTI_ADMIN(
-		Id MEDIUMINT(8) NOT NULL AUTO_INCREMENT,
-		Username VARCHAR(20) NOT NULL,
-		Richiesta TEXT NOT NULL,
-		PRIMARY KEY(Id)
+	function crea_tbl_richieste_user(){
+		$comando="CREATE TABLE IF NOT EXISTS RICHIESTE_USER(
+		Id_richiesta MEDIUMINT(8) NOT NULL AUTO_INCREMENT,
+		Tipo VARCHAR(30) NOT NULL,
+		Testo TEXT NOT NULL,
+		Username VARCHAR(25) NOT NULL,
+		PRIMARY KEY(Id_richiesta),
+		CONSTRAINT Chiaveesterna18 FOREIGN KEY(Username) REFERENCES UTENTI(Username)
 		)";
-	}*/
-
+		if($this->connect->query($comando)==TRUE)
+			return true;
+	}
+	
+	function crea_tbl_risposte_user(){
+		$comando="CREATE TABLE IF NOT EXISTS RISPOSTE_ADMIN(
+		Id_risposta MEDIUMINT(8) NOT NULL AUTO_INCREMENT,
+		Username VARCHAR(25) NOT NULL,
+		Testo TEXT NOT NULL,
+		PRIMARY KEY(Id_risposta),
+		CONSTRAINT Chiaveesterna19 FOREIGN KEY(Username) REFERENCES UTENTI(Username)
+		)";
+		if($this->connect->query($comando)==TRUE)
+			return true;
+	}
+	
 	function crea_tbl_ricerca(){
 	    $comando="CREATE TABLE IF NOT EXISTS RICERCA(
 		Id_ricerca MEDIUMINT(8) NOT NULL AUTO_INCREMENT,
@@ -201,8 +203,22 @@ class Sql{
 		if($this->connect->query($comando)==true)
 			return true;
 	}
-
-	//transazione sul controllo degli elementi
+	
+	function crea_tbl_visitatori(){
+		$comando="CREATE TABLE IF NOT EXISTS VISITATORI(
+	    Id_visitatore MEDIUMINT(8) NOT NULL AUTO_INCREMENT,
+	    Indirizzo_ip VARCHAR(20) NOT NULL,
+		Porta VARCHAR(8) NOT NULL,
+		Host VARCHAR(30) NOT NULL,
+		Info VARCHAR(150) NOT NULL,
+		Data DATE NOT NULL,
+		Ora TIME NOT NULL,
+		PRIMARY KEY(Id_visitatore)
+	    )";
+		if($this->connect->query($comando)==true)
+			return true;
+	}
+	
 	function controlla_elementi($p,$q){
 		mysqli_escape_string($this->connect,$p);
 		mysqli_escape_string($this->connect,$q);
@@ -220,17 +236,12 @@ class Sql{
 
 	function controlla_luogo($luogo){
 	   mysqli_escape_string($this->connect,$luogo);
-	   $comando = "SELECT Luogo AS luogo FROM LUOGHI WHERE Luogo='".$luogo."'";
+	   $comando = "SELECT Luogo AS luogo FROM LUOGHI WHERE Luogo LIKE '%".$luogo."%' OR Provincia LIKE '%".$luogo."%' OR Ricercato LIKE '%".$p."%'";
 	   $result=$this->connect->query($comando);
-		if($result->num_rows > 0){
-    	   $row = $result->fetch_assoc();
-			if($row['luogo']==$luogo)
-				return true;
-			else
-				return false;
-		}
-		else
-			return false;
+		if($result->num_rows==1)
+		  	return true;
+	    else
+		  	return false;
 	}
 
 
@@ -562,6 +573,17 @@ class Sql{
 	function chiudi(){
 		$this->connect->close();
 	}
+	
+	function inserisci_richiesta($tipo,$testo,$user){
+		mysqli_escape_string($this->connect,$tipo);
+		mysqli_escape_string($this->connect,$testo);
+		mysqli_escape_string($this->connect,$user);
+		$comando = "INSERT INTO RICHIESTE_USER(Tipo,Testo,Username) VALUES ('$tipo','$testo','$user')";
+		if($this->connect->query($comando))
+			return true;
+		else
+			return false;
+	}
 
 	//FUNZIONI LATO AMMINISTRATORE -----------------------------------------------------------------------------------------
 	function ritorna_ricerche(){
@@ -597,7 +619,7 @@ class Sql{
 	}
 
 	function ritorna_commenti(){
-		$comando="SELECT*FROM COMMENTI JOIN DATI ON COMMENTI.Id_dato=DATI.Id_dato";
+		$comando="SELECT*FROM COMMENTI JOIN DATI ON COMMENTI.Id_dato=DATI.Id_dato ORDER BY Id_commento DESC";
 		if($this->connect->query($comando)==TRUE)
 			return $this->connect->query($comando);
 		else
@@ -684,22 +706,63 @@ class Sql{
 		else
 			return false;
 	}
-
-	function abilita_constraints(){
-		$comando = "ALTER TABLE UTENTI CHECK CONSTRAINT ALL";
+	
+	function inserisci_visitatore($ip,$port,$host,$info){
+		mysqli_escape_string($this->connect,$ip);
+		mysqli_escape_string($this->connect,$port);
+		mysqli_escape_string($this->connect,$host);
+		mysqli_escape_string($this->connect,$info);
+		$comando = "INSERT INTO VISITATORI(Indirizzo_ip,Porta,Host,Info,Data,Ora) VALUES('$ip','$port','$host','$info',NOW(),NOW())";
 		if($this->connect->query($comando))
 			return true;
 		else
 			return false;
 	}
-
-	function disabilita_constraints(){
-		$comando = "ALTER TABLE UTENTI NOCHECK CONSTRAINT ALL";
+	
+	function return_n_visitors(){
+		$comando = "SELECT COUNT(DISTINCT Indirizzo_ip) AS total FROM VISITATORI";
 		if($this->connect->query($comando))
-			return true;
+			return $this->connect->query($comando);
 		else
 			return false;
-
+	}
+	
+	function ritorna_visitatori(){
+		$comando = "SELECT * FROM VISITATORI GROUP BY Indirizzo_ip";
+		if($this->connect->query($comando))
+			return $this->connect->query($comando);
+		else
+			return false;
+	}
+	
+	function ritorna_visite(){
+		$comando = "SELECT COUNT(*) AS total FROM VISITATORI";
+		if($this->connect->query($comando))
+			return $this->connect->query($comando);
+		else
+			return false;	
+	}
+	
+	function n_richieste(){
+		$comando = "SELECT COUNT(*) AS total FROM RICHIESTE_USER";
+		if($this->connect->query($comando))
+			return $this->connect->query($comando);
+		else
+			return false;
+	}
+	
+	function stampa_richieste(){
+		$comando = "SELECT*FROM RICHIESTE_USER";
+		if($this->connect->query($comando))
+			return $this->connect->query($comando);
+		else
+			return false;
+	}
+	
+	function inserisci_risposta(){
+		
+		
+		
 	}
 };
 ?>

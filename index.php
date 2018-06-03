@@ -2,6 +2,22 @@
 include("./classi/Sql.php");
 require("./dinamiche/prepara.php");
 session_start();
+
+if (!empty($_SERVER['HTTP_CLIENT_IP']))
+  $ip=$_SERVER['HTTP_CLIENT_IP'];
+else if (!empty($_SERVER['HTTP_X_FORWARDED_FOR']))
+  $ip=$_SERVER['HTTP_X_FORWARDED_FOR'];
+else
+  $ip=$_SERVER['REMOTE_ADDR'];
+
+$port=$_SERVER['REMOTE_PORT'];
+$info=$_SERVER['HTTP_USER_AGENT'];
+$host=$_SERVER['HTTP_HOST'];
+
+$sql = new Sql("localhost","root","","progetto_esame");
+$sql->inserisci_visitatore($ip,$port,$host,$info);
+$sql->chiudi();
+
 if(isset($_COOKIE['SID'])&&isset($_COOKIE['TOKEN'])){
 	$sql = new Sql("localhost","root","","progetto_esame");
 	$result=$sql->ritorna_cookie($_COOKIE['SID']);
@@ -45,7 +61,17 @@ if(isset($_COOKIE['SID'])&&isset($_COOKIE['TOKEN'])){
 	   background-repeat: no-repeat;
 	}
 
-	#form3 label.error {
+	#form2 label.error {
+	   color: #f33;
+	   padding: 0;
+	   margin: 2px 0 0 0;
+	   font-size: 13px;
+	   padding-left: 18px;
+	   background-position: 0 0;
+	   background-repeat: no-repeat;
+	}
+		
+	#form label.error {
 	   color: #f33;
 	   padding: 0;
 	   margin: 2px 0 0 0;
@@ -74,8 +100,6 @@ if(isset($_COOKIE['SID'])&&isset($_COOKIE['TOKEN'])){
 	   background-position: 0 0;
 	   background-repeat: no-repeat;
 	}
-
-
 
 	/* BOTTONE MENU LATERALE */
 	#sidebarCollapse{
@@ -454,9 +478,9 @@ if(isset($_COOKIE['SID'])&&isset($_COOKIE['TOKEN'])){
 									?>
 								</li>
 								<li>
-									<!-- RICHIESTA DI SBLOCCO ALL'AMMINISTRATORE -->
+									<!-- CONTATTA AMMINISTRATORE, RICHIEDI INFORMAZIONI O INVIA SUGGERIMENTI PER MIGLIORARE L'APPLICAZIONE -->
 									<?php
-									if(!isset($_SESSION['Loggato']))
+									if(isset($_SESSION['Loggato']))
 										echo "<a data-toggle='modal' id=\"contatta\"  data-target='#myModal2' href=\"\" >Contatta admin</a>";
 
 									?>
@@ -726,17 +750,17 @@ if(isset($_COOKIE['SID'])&&isset($_COOKIE['TOKEN'])){
 				  <div class='modal-header'>
 					<button type='button' class='close' data-dismiss='modal' aria-label='Close'><span aria-hidden='true'>&times;</span></button>
 					  <h4 readonly='readonly' class='modal-title' id='myModalLabel1'>Contatta admin</h4><hr>
-					<h5>Scegli per cosa vuoi contattarlo</h5>
+					<h4>Scegli per cosa vuoi contattarlo</h4>
 					<ul class="chec-radio">
 						<li class="pz">
 							<label class="radio-inline">
-								<input type="radio" checked="" id="pro-chx-residential" name="property_type" class="pro-chx" value="constructed">
-								<div class="clab">Richiesta di sblocco</div>
+								<input type="radio" value="suggerimento" id="pro-chx-residential" name="tipo" id="tipo" class="pro-chx" value="constructed">
+								<div class="clab">Invia suggerimento per migliorare l'app</div>
 							</label>
 						</li>
 						<li class="pz">
 							<label class="radio-inline">
-								<input type="radio" id="pro-chx-commercial" name="property_type" class="pro-chx" value="unconstructed" checked>
+								<input type="radio" value="informazioni" id="pro-chx-commercial" name="tipo" id="tipo" class="pro-chx" value="unconstructed" checked>
 								<div class="clab">Contatta per informazioni</div>
 							</label>
 						</li>
@@ -745,16 +769,16 @@ if(isset($_COOKIE['SID'])&&isset($_COOKIE['TOKEN'])){
 				  <div class='modal-body'>
 					<div class='form-group'>
 					  <label>Inserisci il tuo username</label>
-					  <input type='text' class='form-control' placeholder='Inserisci il tuo username'>
+					  <input name="us" id="us" type='text' readonly='readonly' value='<?php echo $_SESSION['User']?>' class='form-control' placeholder='Inserisci il tuo username'>
 					</div>
 					<div class='form-group'>
 					  <label>Scrivi del testo</label>
-					  <textarea class='form-control' placeholder='Scrivi del testo(non obbligatorio)'></textarea>
+					  <textarea name="testo" id="testo" class='form-control' placeholder='Scrivi del testo'></textarea>
 					</div>
 				  </div>
 				  <div class='modal-footer'>
-					<input name="invia" value='Invia' type='button' class=' btn btn-primary'></input>
-					<input name="close" value='Close' type='button' class=' btn btn-danger' data-dismiss='modal'></input>
+					<button name="invia" value='Invia' type='submit' class=' btn btn-primary'>Invia</button>
+					<button name="close" value='Close' type='button' class=' btn btn-danger' data-dismiss='modal'>Close</button>
 				  </div>
 			   </form>
 			</div>

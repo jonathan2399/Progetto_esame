@@ -10,7 +10,7 @@
           <a class="navbar-brand" href="page.php">AdminStrap</a>
         </div>
         <div id="navbar" class="collapse navbar-collapse">
-		  <?php 
+		  <?php
 			$resource=$_SERVER['REQUEST_URI'];
 			$temp=explode("/",$resource);
 			if($temp[3]=="page.php"){
@@ -21,7 +21,7 @@
 				<li><a href='posts.php'>Commenti</a></li>
 				<li><a href='users.php'>Utenti</a></li>
           		</ul>";
-				
+
 			}else if($temp[3]=="posts.php"){
 				$flag="post";
 				echo "
@@ -30,8 +30,8 @@
 				<li class='active'><a href='posts.php'>Commenti</a></li>
 				<li><a href='users.php'>Utenti</a></li>
           		</ul>";
-				
-				
+
+
 			}else if($temp[3]=="users.php"){
 				$flag="users";
 				echo "
@@ -52,10 +52,10 @@
 		  ?>
 		  <form method='post'>
           <ul class="nav navbar-nav navbar-right">
-			 
+
 			<li><a href="#"><?php echo "Benvenuto " . $_SESSION['nome'] . "," . $_SESSION['cognome'] ?></a></li>
 			<li><a id='logout' type='submit' name='logout' href="">Logout</a></li>
-			 
+
           </ul>
 		  </form>
         </div>
@@ -85,7 +85,7 @@
 		  <ol class='breadcrumb'>
 	  		<li class='active'>Commenti</li>
 		  </ol>";
-		  
+
 	  }else if($flag=="users"){
 		  echo "
 		  <ol class='breadcrumb'>

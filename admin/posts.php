@@ -6,7 +6,7 @@ if(isset($_REQUEST['Elimina'])){
 	if($sql->elimina_commento($_REQUEST['Id'])!=false)
 		exit("cancellato");
 	$sql->chiudi();
-	
+
 }else if(isset($_REQUEST['Guarda'])){
 	$sql = new Sql("localhost","root","","progetto_esame");
 	if($sql->ritorna_commento($_REQUEST['Id'])!=false){
@@ -44,7 +44,7 @@ if(isset($_REQUEST['Elimina'])){
   <?php require("./Templates/head.php");?>
   <body>
 	  <script>
-		
+
 		$(document).ready(function(){
 			$('#logout').click(function(){
 				$.post("page.php",
@@ -56,12 +56,12 @@ if(isset($_REQUEST['Elimina'])){
 				});
 			})
 		});
-		  
+
 		 function elimina(){
 			var id = $('.btn-danger').attr("id");
-			$.ajax({  
+			$.ajax({
 			  method: 'POST',
-			  url: "posts.php",  
+			  url: "posts.php",
 			  data: "Elimina=1" + "&Id=" + id,
 			  dataType: "text",
 			  success: function(risposta){
@@ -73,37 +73,38 @@ if(isset($_REQUEST['Elimina'])){
 			});
 		 }
 	  </script>
-   
-	<?php require("./Templates/header.php");?>
 
-    <section id="main">
-      <div class="container">
-        <div class="row">
-          
-		  <?php require("./Templates/barra_sinistra.php");?>
-			
-          <div class="col-md-9">
+	<?php
+	if(isset($_SESSION['Loggato'])){
+		require("./Templates/header.php");
+		echo "
+    <section id='main'>
+      <div class='container'>
+        <div class='row'>";
+		  require("./Templates/barra_sinistra.php");
+					echo "
+          <div class='col-md-9'>
             <!-- Website Overview -->
-            <div class="panel panel-default">
-              <div class="panel-heading main-color-bg">
-                <h3 class="panel-title">Posts</h3>
+            <div class='panel panel-default'>
+              <div class='panel-heading main-color-bg'>
+                <h3 class='panel-title'>Vedi commenti</h3>
+				<span class='pull-right clickable'><i id='c' class='glyphicon glyphicon-chevron-down'></i></span>
               </div>
-              <div class="panel-body">
-                <div class="row">
-                      <div class="col-md-12">
-                          <input class="form-control" type="text" placeholder="Filter Posts...">
+              <div class='panel-body'>
+                <div class='row'>
+                      <div class='col-md-12'>
+                          <input class='form-control' type='text' placeholder='Filter Posts...'>
                       </div>
                 </div>
                 <br>
 				<br>
-				<table class="table table-striped table-hover">
+				<table id='mytbl' class='table table-striped table-hover'>
 					<tr>
-                        <th>Autore</th>
-                        <th>Data</th>
-                        <th>Ora</th>
+                <th>Autore</th>
+                <th>Data</th>
+                <th>Ora</th>
 						<th></th>
-                    </tr>
-					<?php
+          		</tr>";
 						$sql = new Sql("localhost","root","","progetto_esame");
 						$result=$sql->ritorna_commenti();
 						if($result->num_rows>0){
@@ -116,7 +117,7 @@ if(isset($_REQUEST['Elimina'])){
 									<td>".$row['Ora']."</td>
 									<td><a class='btn btn-default guarda' data-toggle='modal' id='$id' data-target='#$id'>Guarda</a> <a id='$id' onclick='elimina()' class='btn btn-danger' >Elimina</a></td>
 								</tr>
-								
+
 								<div class='modal fade' id='$id' tabindex='-1' role='dialog' aria-labelledby='myModalLabel'>
 								  <div class='modal-dialog' role='document'>
 									<div class='modal-content'>
@@ -142,19 +143,23 @@ if(isset($_REQUEST['Elimina'])){
 									</div>
 								  </div>
 								</div>
-								
+
 								";
 							}
 						}
-					?>
+				echo "
 				</table>
               </div>
               </div>
           </div>
         </div>
       </div>
-    </section>
+    </section>";
+    require("./Templates/footer.php");
+	}else{
+		echo "<center><h1>Error pagina non disponibile</h1></center>";
+	}
 
-    <?php require("./Templates/footer.php");?>
+		?>
   </body>
 </html>

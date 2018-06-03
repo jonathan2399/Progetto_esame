@@ -5,7 +5,7 @@ if(isset($_REQUEST['invia'])){
 	 if (($handle = fopen($filepath, "r")) !== FALSE) {
 	  $nn = 0;
 	  $handle=fopen($filepath, "r");
-		 
+
 	  while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
 	  	$temp=explode(';',$data[0]);
 		$nome=$temp[1];
@@ -16,11 +16,12 @@ if(isset($_REQUEST['invia'])){
 	 } else {
 	  echo "File non trovato";
 	 }
-	
+
 	//CONFRONTO SE LA PASSWORD INSERITA CORRISPONDE CON QUELLA NEL FILE
 	$pass=$_REQUEST['pass'];
 	if(password_verify($pass, $password)){
 		session_start();
+		$_SESSION['Loggato']=1;
 		$_SESSION['nome']=$nome;
 		$_SESSION['cognome']=$cognome;
 		header("Location: page.php");
@@ -67,7 +68,7 @@ if(isset($_REQUEST['invia'])){
         </div>
       </div>
     </header>
-	  
+
     <section id="main">
       <div class="container">
         <div class="row">

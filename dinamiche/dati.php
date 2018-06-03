@@ -9,7 +9,7 @@
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-	
+
 	<style>
 		.loader {
 		  border: 16px solid #f3f3f3;
@@ -33,7 +33,7 @@
 		  0% { transform: rotate(0deg); }
 		  100% { transform: rotate(360deg); }
 		}
-		
+
 		#page{
 			overflow-x: hidden;
 			overflow-y: auto;
@@ -44,16 +44,18 @@
 	<script>
 		$(window).on('load',function(){
 			$('#loading_screen').fadeOut("fast",function(){
+				$("#loading_screen").css("visibility","hidden");
 				$("#page").css("visibility","visible");
 				$('#page').fadeIn();
-				
+
 			});
 		});
-		
+
 		$(document).ready(function(){
 			$("#page").fadeOut("fast");
+			$("#loading_screen").css("visibility","visible");
 			$('#loading_screen').fadeIn("slow");
-			
+
 			var id = getUrlVars()["page"];
 			$("li#"+id).addClass("active");
 			function getUrlVars() {
@@ -65,7 +67,7 @@
 			}
 		});
 	</script>
-	
+
 	<div style="background-color: rgb(255, 163, 26); color: white;" id="loading_screen">
 	  <center>
 	  <h1>Attendi</h1>
@@ -99,20 +101,20 @@
 		$map = new PhpGoogleMap("AIzaSyAcAg8U21nYuM4bWn7PyiV_ZrTUHWEZUbA");
 		$paese=$_GET['paese'];
 		$query=$_GET['query'];
-		
+
 		//PRENDE IL NUMERO DELLA PAGINA CORRENTE
-		$pageid=$_GET["page"];  
-    	$total=6; //numero di record che voglio visualizzare per pagina 
+		$pageid=$_GET["page"];
+    	$total=6; //numero di record che voglio visualizzare per pagina
     	$i=0;
     	$co=$_GET["page"];
     	$prima = false;
-	
+
     	if($pageid==1){}
     	else{
-    		$pageid=$pageid-1;  
-    		$pageid=$pageid*$total+1;  
+    		$pageid=$pageid-1;
+    		$pageid=$pageid*$total+1;
     	}
-	
+
 		//RESTITUISCE TUTTI I DATI DI QUEL LUOGO E DELLA QUERY INSERITA
 		try{
 			$i=0;
@@ -120,9 +122,9 @@
     		$r = $sql->restituisci_venues($paese,$query);
 			//PRELEVA I RECORD TOTALI DAL DATABASE
 			$total_records=mysqli_num_rows($r);
-			//CALCOLA IL NUMERO DI PAGINE 
+			//CALCOLA IL NUMERO DI PAGINE
 			$total_pages=ceil($total_records/$total);
-			
+
 			if($r->num_rows>0){
 				while($row = $r->fetch_assoc()){
 					$latitudini[$i]=$row["Latitudine"];
@@ -145,7 +147,7 @@
 		$map->set_nmarkers(count($latitudini));
 		$map->set_map1();
 		$map->renderHTML();
-		
+
 	?>
 	<div id="container" class="container">
 		<?php
@@ -179,16 +181,16 @@
 			 }
 		?>
 	</div>
-	
+
 	<!--Footer-->
-	
+
 	<footer class="page-footer font-small blue pt-4 mt-4">
 		<!--Footer Links-->
 		<div class="container-fluid text-center text-md-left" style="background-color: rgb(100,100,100); color: white; ">
 			<div id="pa" class="row">
 				<div id="page-selection"></div>
 				<?php
-					//PAGINATION 
+					//PAGINATION
 					echo("<nav class=\"centro\" aria-label=\"Page navigation example\">");
 						echo("<ul class=\"pagination\">");
 							echo("<li class=\"page-item\">");
@@ -207,7 +209,7 @@
 								    else
 										echo("<li id='$i' class=\"page-item\"><a class=\"page-link \" href='dati.php?page=$i&paese=$paese&query=$query' >" . $i . "</a></li>");
 							}
-								
+
 							echo("<li class=\"page-item\">");
 							  if($co<$total_pages-1){
 								if($prima==false)

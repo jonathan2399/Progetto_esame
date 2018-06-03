@@ -16,22 +16,19 @@
 			exit("Logout riuscito");
 	   }
   }
-	
-  if(isset($_REQUEST['InviaPHP'])){
+  else if(isset($_REQUEST['InviaPHP'])){
 	 $sql = new Sql("localhost","root","","progetto_esame");
 	 $sql->inserisci_commento($_SESSION['id'],$_SESSION['User'],$_REQUEST['testoPHP']);
 	 require("./Commenti/preleva_commenti.php");
 	 require("./Commenti/stampa_commenti.php"); 
 	 $sql->chiudi();
   }
-
-  if(isset($_REQUEST['Elimina'])){
+  else if(isset($_REQUEST['Elimina'])){
 	  $sql = new Sql("localhost","root","","progetto_esame");
 	  $sql->elimina_commento($_REQUEST['Id']);
 	  $sql->chiudi();
   }
-
-  if(isset($_REQUEST['valida'])){
+  else if(isset($_REQUEST['valida'])){
       //$sql = new Sql("jpinna.it.mysql","jpinna_it","MDA9Kt7Z","jpinna_it");
 	  $sql = new Sql("localhost","root","","progetto_esame");
       $accesso= $sql->confronta($_REQUEST['userPHP'],$_REQUEST['passPHP']);
@@ -67,15 +64,13 @@
 			exit("Login non riuscito");
 	  }
   }
-
-  if(isset($_REQUEST['Salva'])){
+  else if(isset($_REQUEST['Salva'])){
 	  $sql = new Sql("localhost","root","","progetto_esame");
 	  $sql->inserisci_preferito($_SESSION['id'],$_SESSION['User']);
 	  exit("<h4>Luogo salvato correttamente nei preferiti!</h4><br><hr>");
 	  $sql->chiudi();
   }
-
-  if(isset($_REQUEST['update'])){
+  else if(isset($_REQUEST['update'])){
 	  $t=false;
 	  $sql = new Sql("localhost","root","","progetto_esame");
 	  $t=$sql->aggiorna_pass($_REQUEST['pass'],$_SESSION['User']);
@@ -83,6 +78,16 @@
 		  echo "Password aggiornata";
 	  else
 		  echo "Password NON aggiornata";
+	  $sql->chiudi();
+  }
+  else if(isset($_REQUEST['invia'])){
+	  $t=false;
+	  $sql = new Sql("localhost","root","","progetto_esame");
+	  $t=$sql->inserisci_richiesta($_REQUEST['tipo'],$_REQUEST['testo'],$_SESSION['User']);
+	  if($t==true)
+		  echo "Richiesta inviata";
+	  else
+		  echo "Richiesta NON inviata";
 	  $sql->chiudi();
   }
 ?>

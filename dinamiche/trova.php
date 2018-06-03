@@ -25,7 +25,7 @@
 	if((isset($_REQUEST['query'])&&isset($_REQUEST['citta'])&&isset($_REQUEST['cerca']))||(isset($_REQUEST['cat'])&&isset($_REQUEST['citta']))){
 		//SE QUERY, CITTA E BOTTONE CERCA SONO SETTATI O CA E' SETATO ALLORA CONTROLLA SE SONO PRESENTI NEL DATABASE ALTRIMENTI EFFETTUA RICHIESTE HTTP
 		$cerca->set_query($_REQUEST['query']);
-		$cerca->set_key("AIzaSyDUhKCHh3_iQVo7Id2h5X14_bOG8NcXTfM");
+		$cerca->set_key("AIzaSyAW121HZee767g3JOEQ1MGMEGvUUjc04Xw");
 		//AIzaSyBGDSOx9gv_SMDpFlhUe7w43C7RG7423Tk
 		//CONTROLLA SE SONO PRESENTI GLI ELEMENTI IN BASE AI PARAMETRI INSERITI DALL'UTENTE
 		$presenti = $sql->controlla_elementi($cerca->get_paese(),$cerca->get_query());
