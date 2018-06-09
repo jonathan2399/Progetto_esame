@@ -20,11 +20,12 @@
 	$result=$sql->n_richieste();
 	$row=$result->fetch_assoc();
 	$news=$row['total'];
+	$result=$sql->stampa_richieste();
   ?>
   <div class="panel panel-primary">
 	<div class="panel-heading">
 		<h5 class="panel-title">Notifiche</h5>
-		<span class="pull-right clickable"><i id='vis' class="glyphicon glyphicon-chevron-down"></i></span>
+		<span class="pull-right clickable"><i id='no' class="glyphicon glyphicon-chevron-down"></i></span>
 	</div> 
 	<div class="panel-body">
 		<a href="page.php" class="list-group-item"><span class="glyphicon glyphicon-user" aria-hidden="true"></span> Notifiche <span id='<?php echo $news ?>' class="badge news"><?php echo $news ?></span></a>

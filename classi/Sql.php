@@ -76,25 +76,29 @@ class Sql{
 		Tipo VARCHAR(30) NOT NULL,
 		Testo TEXT NOT NULL,
 		Username VARCHAR(25) NOT NULL,
+		Data DATE NOT NULL,
+		Ora TIME NOT NULL,
 		PRIMARY KEY(Id_richiesta),
 		CONSTRAINT Chiaveesterna18 FOREIGN KEY(Username) REFERENCES UTENTI(Username)
 		)";
 		if($this->connect->query($comando)==TRUE)
 			return true;
 	}
-	
+
 	function crea_tbl_risposte_user(){
 		$comando="CREATE TABLE IF NOT EXISTS RISPOSTE_ADMIN(
 		Id_risposta MEDIUMINT(8) NOT NULL AUTO_INCREMENT,
 		Username VARCHAR(25) NOT NULL,
 		Testo TEXT NOT NULL,
+		Data DATE NOT NULL,
+		Ora TIME NOT NULL,
 		PRIMARY KEY(Id_risposta),
 		CONSTRAINT Chiaveesterna19 FOREIGN KEY(Username) REFERENCES UTENTI(Username)
 		)";
 		if($this->connect->query($comando)==TRUE)
 			return true;
 	}
-	
+
 	function crea_tbl_ricerca(){
 	    $comando="CREATE TABLE IF NOT EXISTS RICERCA(
 		Id_ricerca MEDIUMINT(8) NOT NULL AUTO_INCREMENT,
@@ -203,7 +207,7 @@ class Sql{
 		if($this->connect->query($comando)==true)
 			return true;
 	}
-	
+
 	function crea_tbl_visitatori(){
 		$comando="CREATE TABLE IF NOT EXISTS VISITATORI(
 	    Id_visitatore MEDIUMINT(8) NOT NULL AUTO_INCREMENT,
@@ -218,7 +222,7 @@ class Sql{
 		if($this->connect->query($comando)==true)
 			return true;
 	}
-	
+
 	function controlla_elementi($p,$q){
 		mysqli_escape_string($this->connect,$p);
 		mysqli_escape_string($this->connect,$q);
@@ -501,6 +505,8 @@ class Sql{
 		$comando = "DELETE FROM COMMENTI WHERE Id_commento='".$id."'";
 		if($this->connect->query($comando)==false)
 			return false;
+		else 
+			return true;
 	}
 
 	function controlla_preferito($id,$user){
@@ -573,12 +579,12 @@ class Sql{
 	function chiudi(){
 		$this->connect->close();
 	}
-	
+
 	function inserisci_richiesta($tipo,$testo,$user){
 		mysqli_escape_string($this->connect,$tipo);
 		mysqli_escape_string($this->connect,$testo);
 		mysqli_escape_string($this->connect,$user);
-		$comando = "INSERT INTO RICHIESTE_USER(Tipo,Testo,Username) VALUES ('$tipo','$testo','$user')";
+		$comando = "INSERT INTO RICHIESTE_USER(Tipo,Testo,Username,Data,Ora) VALUES ('$tipo','$testo','$user',NOW(),NOW())";
 		if($this->connect->query($comando))
 			return true;
 		else
@@ -604,14 +610,6 @@ class Sql{
 
 	function ritorna_utenti(){
 		$comando="SELECT*FROM UTENTI";
-		if($this->connect->query($comando)==TRUE)
-			return $this->connect->query($comando);
-		else
-			return false;
-	}
-
-	function ritorna_bloccati(){
-		$comando="SELECT*FROM BLOCCATI";
 		if($this->connect->query($comando)==TRUE)
 			return $this->connect->query($comando);
 		else
@@ -644,53 +642,6 @@ class Sql{
 			return false;
 	}
 
-	function elimina_sbloccato($id){
-		mysqli_escape_string($this->connect,$id);
-		$comando = "DELETE FROM UTENTI WHERE Username='".$id."'";
-		if($this->connect->query($comando))
-			return true;
-		else
-			return false;
-	}
-
-	function inserisci_sbloccato($id){
-		mysqli_escape_string($this->connect,$id);
-		$comando = "INSERT INTO UTENTI(Username,Email,Nome,Cognome,Password) SELECT * FROM BLOCCATI WHERE Username='".$id."'";
-		if($this->connect->query($comando))
-			return true;
-		else
-			return false;
-	}
-
-	function elimina_bloccato($id){
-		mysqli_escape_string($this->connect,$id);
-		$comando = "DELETE FROM BLOCCATI WHERE Username='".$id."'";
-		if($this->connect->query($comando))
-			return true;
-		else
-			return false;
-	}
-
-	function ritorna_bloccato($id){
-		mysqli_escape_string($this->connect,$id);
-		$comando = "SELECT*FROM BLOCCATI WHERE Username='".$id."'";
-		$result=$this->connect->query($comando);
-		if($result->num_rows>0){
-			$row=$result->fetch_assoc();
-			return $row;
-		}else
-			return false;
-	}
-
-	function ritorna_sbloccato($id){
-		mysqli_escape_string($this->connect,$id);
-		$comando = "SELECT*FROM UTENTI WHERE Username='".$id."'";
-		if($this->connect->query($comando))
-			return $this->connect->query($comando);
-		else
-			return false;
-	}
-
 	function return_n_comments(){
 		$comando = "SELECT COUNT(*) AS total FROM COMMENTI";
 		if($this->connect->query($comando))
@@ -706,7 +657,7 @@ class Sql{
 		else
 			return false;
 	}
-	
+
 	function inserisci_visitatore($ip,$port,$host,$info){
 		mysqli_escape_string($this->connect,$ip);
 		mysqli_escape_string($this->connect,$port);
@@ -718,7 +669,7 @@ class Sql{
 		else
 			return false;
 	}
-	
+
 	function return_n_visitors(){
 		$comando = "SELECT COUNT(DISTINCT Indirizzo_ip) AS total FROM VISITATORI";
 		if($this->connect->query($comando))
@@ -726,23 +677,23 @@ class Sql{
 		else
 			return false;
 	}
-	
+
 	function ritorna_visitatori(){
-		$comando = "SELECT * FROM VISITATORI GROUP BY Indirizzo_ip";
+		$comando = "SELECT * FROM VISITATORI GROUP BY Indirizzo_ip ORDER BY Id_visitatore DESC";
 		if($this->connect->query($comando))
 			return $this->connect->query($comando);
 		else
 			return false;
 	}
-	
+
 	function ritorna_visite(){
 		$comando = "SELECT COUNT(*) AS total FROM VISITATORI";
 		if($this->connect->query($comando))
 			return $this->connect->query($comando);
 		else
-			return false;	
+			return false;
 	}
-	
+
 	function n_richieste(){
 		$comando = "SELECT COUNT(*) AS total FROM RICHIESTE_USER";
 		if($this->connect->query($comando))
@@ -750,19 +701,59 @@ class Sql{
 		else
 			return false;
 	}
-	
+
 	function stampa_richieste(){
-		$comando = "SELECT*FROM RICHIESTE_USER";
+		$comando = "SELECT*FROM RICHIESTE_USER ORDER BY Id_richiesta DESC";
+		if($this->connect->query($comando))
+			return $this->connect->query($comando);
+		else
+			return false;
+	}
+
+	function inserisci_risposta($user,$testo){
+		mysqli_escape_string($this->connect,$user);
+		mysqli_escape_string($this->connect,$testo);
+		$comando = "INSERT INTO RISPOSTE_ADMIN(Username,Testo,Data,Ora) VALUES('$user','$testo',NOW(),NOW())";
+		if($this->connect->query($comando))
+			return true;
+		else
+			return false;
+	}
+
+	function elimina_richiesta($id){
+		mysqli_escape_string($this->connect,$id);
+		$comando = "DELETE FROM RICHIESTE_USER WHERE Id_richiesta='".$id."'";
+		if($this->connect->query($comando)==false)
+			return false;
+		else
+			return true;
+	}
+	
+	function stampa_risposte($user){
+		mysqli_escape_string($this->connect,$user);
+		$comando = "SELECT*FROM RISPOSTE_ADMIN WHERE Username='$user' ORDER BY Id_risposta DESC";
 		if($this->connect->query($comando))
 			return $this->connect->query($comando);
 		else
 			return false;
 	}
 	
-	function inserisci_risposta(){
+	function cancella_risposta($id){
+		mysqli_escape_string($this->connect,$id);
+		$comando = "DELETE FROM RISPOSTE_ADMIN WHERE Id_risposta='".$id."'";
+		if($this->connect->query($comando)==false)
+			return false;
+		else
+			return true;
 		
-		
-		
+	}
+	
+	function elimina_risposte(){
+		$comando = "DELETE FROM RISPOSTE_ADMIN ";
+		if($this->connect->query($comando)==false)
+			return false;
+		else
+			return true;
 	}
 };
 ?>

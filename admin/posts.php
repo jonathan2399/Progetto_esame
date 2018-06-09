@@ -44,36 +44,41 @@ if(isset($_REQUEST['Elimina'])){
   <?php require("./Templates/head.php");?>
   <body>
 	  <script>
-
-		$(document).ready(function(){
-			$('#logout').click(function(){
-				$.post("page.php",
-				{
-				  logout: 1
-				},
-				function(response){
-					window.location.href = './index.php';
-				});
-			})
-		});
-
-		 function elimina(){
-			var id = $('.btn-danger').attr("id");
-			$.ajax({
-			  method: 'POST',
-			  url: "posts.php",
-			  data: "Elimina=1" + "&Id=" + id,
-			  dataType: "text",
-			  success: function(risposta){
-				  $('tr#'+ id).remove();
-			  },
-			  error: function(){
-				alert("Chiamata fallita, si prega di riprovare...");
-			  }
-			});
-		 }
+		<?php require('./requests_ajax.js');?> 
 	  </script>
-
+	  <script>
+		function elimina_commento(event){
+			
+			if(event.type=="click"){
+				var target = event.target;
+				var id = target.id;
+				$.ajax({
+				  method: 'post',
+				  url: "./return_data.php",
+				  dataType: 'text',
+				  data:{
+					elimina: 1,
+					Id: id
+				  },
+				  success:function(response){
+					if(response=="true"){
+					  $('.'+id).fadeOut("slow",function(){
+						  $('.'+id).remove();
+					  });
+					  var count4 = $(".com").attr("id");
+					  count4=count4-1;
+					  //AGGIORNA IL NUMERO
+					  $('.com').replaceWith("<span id='"+count4+"' class='badge com'>"+count4+"</span>");
+					}
+				  },
+				  error:function(){
+					alert("Chiamata fallita....");
+				  }
+				});
+			}
+		}
+		  
+	  </script>
 	<?php
 	if(isset($_SESSION['Loggato'])){
 		require("./Templates/header.php");
@@ -93,7 +98,7 @@ if(isset($_REQUEST['Elimina'])){
               <div class='panel-body'>
                 <div class='row'>
                       <div class='col-md-12'>
-                          <input class='form-control' type='text' placeholder='Filter Posts...'>
+                          <input class='form-control' id='dev-table-filter' data-action='filter' data-filters='#mytbl' type='text' placeholder='Filter Posts...'>
                       </div>
                 </div>
                 <br>
@@ -104,18 +109,18 @@ if(isset($_REQUEST['Elimina'])){
                 <th>Data</th>
                 <th>Ora</th>
 						<th></th>
-          		</tr>";
+          		</tr><tbody>";
 						$sql = new Sql("localhost","root","","progetto_esame");
 						$result=$sql->ritorna_commenti();
 						if($result->num_rows>0){
 							while($row = mysqli_fetch_array($result)){
 								$id=$row['Id_commento'];
 								echo "
-								<tr class='riga' id='$id' >
+								<tr class='$id' >
 									<td>".$row['Username'] ."</td>
 									<td>".$row['Data']."</td>
 									<td>".$row['Ora']."</td>
-									<td><a class='btn btn-default guarda' data-toggle='modal' id='$id' data-target='#$id'>Guarda</a> <a id='$id' onclick='elimina()' class='btn btn-danger' >Elimina</a></td>
+									<td><a class='btn btn-default guarda' data-toggle='modal' id='$id' data-target='#$id'>Guarda</a> <a id='$id' onclick='elimina_commento(event);' class='elimina btn btn-danger' >Elimina</a></td>
 								</tr>
 
 								<div class='modal fade' id='$id' tabindex='-1' role='dialog' aria-labelledby='myModalLabel'>
@@ -147,7 +152,7 @@ if(isset($_REQUEST['Elimina'])){
 								";
 							}
 						}
-				echo "
+				echo "</tbody>
 				</table>
               </div>
               </div>
@@ -159,7 +164,6 @@ if(isset($_REQUEST['Elimina'])){
 	}else{
 		echo "<center><h1>Error pagina non disponibile</h1></center>";
 	}
-
-		?>
+	  ?>
   </body>
 </html>

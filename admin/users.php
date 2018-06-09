@@ -7,17 +7,7 @@ include("../classi/Sql.php");
   <?php require("./Templates/head.php");?>
   <body>
 	<script>
-		$(document).ready(function(){
-			$('#logout').click(function(){
-				$.post("page.php",
-				{
-				  logout: 1
-				},
-				function(response){
-					window.location.href = './index.php';
-				});
-			})
-		});
+	<?php require('./requests_ajax.js');?>
 	</script>
     <?php require("./Templates/header.php");?>
     <section id="main">
@@ -34,7 +24,7 @@ include("../classi/Sql.php");
               <div class="panel-body">
                 <div class="row">
                       <div class="col-md-12">
-                          <input class="form-control" type="text" placeholder="Filter Users...">
+                          <input class="form-control" type="text" id='dev-table-filter' data-action='filter' data-filters='#tbl_users' placeholder="Filter Users...">
                       </div>
                 </div>
                 <br>
@@ -45,6 +35,7 @@ include("../classi/Sql.php");
                         <th>User</th>
                         <th></th>
                     </tr>
+					<tbody>
 					<?php
 						$sql = new Sql("localhost","root","","progetto_esame");
 						$result=$sql->ritorna_utenti();
@@ -59,6 +50,7 @@ include("../classi/Sql.php");
 							}
 						}
 					?>
+					</tbody>
 				</table>
               </div>
               </div>
@@ -71,7 +63,7 @@ include("../classi/Sql.php");
               <div class="panel-body">
                 <div class="row">
                       <div class="col-md-12">
-                          <input class="form-control" type="text" placeholder="Filter Users...">
+                          <input class="form-control" type="text" id='dev-table-filter' data-action='filter' data-filters='#tbl_visitors' placeholder="Filter Users...">
                       </div>
                 </div>
                 <br>

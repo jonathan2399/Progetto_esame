@@ -202,7 +202,8 @@ PAGINA DEI DATI
 /* GESTIONE DEL CARD BODY CHE CONTIENE IL TESTO */
 .card-body{
 	margin-top: 18px;
-	background: rgb(100, 100, 100);
+	background: #337AB7!important;
+	/*background: rgb(100, 100, 100);*/
 	opacity: 0.4;
 	color: white;
 }

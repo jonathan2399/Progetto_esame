@@ -28,6 +28,7 @@ if(isset($_COOKIE['SID'])&&isset($_COOKIE['TOKEN'])){
 			if($result->num_rows>0){
 				$row = $result->fetch_assoc();
 				$_SESSION['Loggato']=$row['Nome'];
+				$_SESSION['User']=$row['Username'];
 			}
 		}
 	}
@@ -44,13 +45,13 @@ if(isset($_COOKIE['SID'])&&isset($_COOKIE['TOKEN'])){
 	<script type="text/javascript" src="https://maps.google.it/maps/api/js?key=AIzaSyAW121HZee767g3JOEQ1MGMEGvUUjc04Xw&libraries=places"></script>
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.min.css">
 	<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
   	<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
   	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 	<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.14.0/jquery.validate.min.js"></script>
 	<script type="text/javascript" src="controlli.js"></script>
 
 	<style>
-
 	#form1 label.error {
 	   color: #f33;
 	   padding: 0;
@@ -253,7 +254,7 @@ if(isset($_COOKIE['SID'])&&isset($_COOKIE['TOKEN'])){
 	.chec-radio .radio-inline .clab {
 		cursor: pointer;
 		background: #e7e7e7;
-		padding: 7px 20px;
+		padding: 3px 10px;
 		text-align: center;
 		text-transform: uppercase;
 		color: #333;
@@ -339,6 +340,10 @@ if(isset($_COOKIE['SID'])&&isset($_COOKIE['TOKEN'])){
 		$(document).ready(function(){
 			$("#page").fadeOut("fast");
 			$('#loading_screen').fadeIn("fast");
+			/*
+			$('#scritta').removeClass('bounceInDown',function(){
+				$('#scritta').addClass('infinite pulse');
+			});*/
 			
 			$('.cat').click(function(){
 				var c = $('#citta').val();
@@ -486,6 +491,14 @@ if(isset($_COOKIE['SID'])&&isset($_COOKIE['TOKEN'])){
 									?>
 								</li>
 								<li>
+									<!-- VEDI NOTIFICHE -->
+									<?php
+									if(isset($_SESSION['Loggato']))
+										echo "<a id=\"vedi_risposte\" href=\"./risposte.php\" >Vedi notifiche</a>";
+
+									?>
+								</li>
+								<li>
 									<!-- AGGIORNA PASSWORD UTENTE -->
 									<?php
 									if(isset($_SESSION['Loggato']))
@@ -505,7 +518,7 @@ if(isset($_COOKIE['SID'])&&isset($_COOKIE['TOKEN'])){
 						</nav>
 					</div>
 					<!-- NAVBAR BRAND CHE CORRISPONDE AL TITOLO DELL'APPLICAZIONE -->
-					<a id="titolo" class="navbar-brand" href="">SearchPlaces</a>
+					<a id="titolo" class="animated fadeIn navbar-brand" href="">SearchPlaces</a>
 			</nav>
 
 			<!-- GESTIONE SLIDER -->
@@ -534,7 +547,7 @@ if(isset($_COOKIE['SID'])&&isset($_COOKIE['TOKEN'])){
 					<div class="col-md-8 col-md-offset-2 text-center">
 						<div class="display-t">
 							<div class="display-tc animate-box" data-animate-effect="fadeIn">
-								<h1 id="scritta">Prova a cercare dei posti che ti interessano</h1>
+								<h1 class='animated bounceInDown' id="scritta">Prova a cercare dei posti che ti interessano</h1>
 								<!-- FORM PER INSERIRE I PARAMETRI CITTA' E QUERY-->
 								<div class="row">
 									<form class="form-inline" id="mioform" name="mioform" method="post" action="./dinamiche/trova.php">
@@ -562,10 +575,10 @@ if(isset($_COOKIE['SID'])&&isset($_COOKIE['TOKEN'])){
 			  <div class="col-lg-3 col-md-3 col-sm-3">
 				  <center>
 				  <a class="cat" href="#" id="food" >
-				  <div class="card" >
-					<img class="card-img-top img-circle" src="./immagini/cibo.jpg" width="200px" height="140px"  alt="Card image cap">
+				  <div class="animated bounceInDown card" >
+					<img class="animated fadeIn card-img-top img-circle" src="./immagini/cibo.jpg" width="200px" height="140px"  alt="Card image cap">
 					<div class="card-body" >
-					  <h5 class="card-title" style="background-color: orange">Cibo</h5>
+					  <h5 class="animated fadeIn card-title" style="background-color: orange">Cibo</h5>
 					  <!--<p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>-->
 					</div>
 				  </div>
@@ -575,10 +588,10 @@ if(isset($_COOKIE['SID'])&&isset($_COOKIE['TOKEN'])){
 			  <div class="col-lg-3 col-md-3 col-sm-3">
 				  <center>
 				  <a class="cat" href="#" id="divertimento" >
-					  <div class="card" >
-						<img class="card-img-top img-circle" src="./immagini/svago.jpg" width="200px" height="140px"  alt="Card image cap">
+					  <div class="animated bounceInDown card" >
+						<img class="animated fadeIn card-img-top img-circle" src="./immagini/svago.jpg" width="200px" height="140px"  alt="Card image cap">
 						<div class="card-body">
-						  <h5  class="card-title" style="background-color: orange">Divertimento</h5>
+						  <h5  class="animated fadeIn card-title" style="background-color: orange">Divertimento</h5>
 						  <!--<p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>-->
 
 						</div>
@@ -589,10 +602,10 @@ if(isset($_COOKIE['SID'])&&isset($_COOKIE['TOKEN'])){
 			  <div class="col-lg-3 col-md-3 col-sm-3">
 				  <center>
 				  <a class="cat" href="#" id="culture" >
-					  <div class="card" >
-						<img class="card-img-top img-circle" src="./immagini/cultura.jpg" width="200px" height="140px"  alt="Card image cap">
+					  <div class="animated bounceInDown card" >
+						<img class="animated fadeIn card-img-top img-circle" src="./immagini/cultura.jpg" width="200px" height="140px"  alt="Card image cap">
 						<div class="card-body" >
-						  <h5  class="card-title" style="background-color: orange;">Cultura</h5>
+						  <h5  class="animated fadeIn card-title" style="background-color: orange;">Cultura</h5>
 						  <!--<p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>-->
 
 						</div>
@@ -603,10 +616,10 @@ if(isset($_COOKIE['SID'])&&isset($_COOKIE['TOKEN'])){
 			  <div class="col-lg-3 col-md-3 col-sm-3" style="background-color: white;">
 				  <center>
 			      <a class="cat" href="#" id="shopping" >
-					  <div class="card" >
-						<img class="card-img-top img-circle" src="./immagini/shopping.jpg" width="200px" height="140px"  alt="Card image cap">
+					  <div class="animated bounceInDown card" >
+						<img class="animated fadeIn card-img-top img-circle" src="./immagini/shopping.jpg" width="200px" height="140px"  alt="Card image cap">
 						<div class="card-body" >
-						  <h5  class="card-title" style="background-color: orange;">Shopping</h5>
+						  <h5  class="animated fadeIn card-title" style="background-color: orange;">Shopping</h5>
 						  <!--<p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>-->
 
 						</div>
@@ -742,7 +755,7 @@ if(isset($_COOKIE['SID'])&&isset($_COOKIE['TOKEN'])){
     	</div>
 
 	</div>
-	<!-- FINESTRA MODALE PER LA RICHIESTA DI SBLOCCO ALL'AMMINISTRATORE -->
+	<!-- FINESTRA MODALE PER CONTATTARE L'AMMINISTRATORE -->
 	<div class='modal fade' id="myModal2" tabindex='-1' role='dialog' aria-labelledby='myModalLabel2' aria-hidden='true'>
 		  <div class='modal-dialog' role='document'>
 			<div class='modal-content'>
@@ -754,13 +767,13 @@ if(isset($_COOKIE['SID'])&&isset($_COOKIE['TOKEN'])){
 					<ul class="chec-radio">
 						<li class="pz">
 							<label class="radio-inline">
-								<input type="radio" value="suggerimento" id="pro-chx-residential" name="tipo" id="tipo" class="pro-chx" value="constructed">
+								<input type="radio" value="Suggerimento" id="pro-chx-residential" name="tipo" id="tipo" class="pro-chx" value="constructed">
 								<div class="clab">Invia suggerimento per migliorare l'app</div>
 							</label>
 						</li>
 						<li class="pz">
 							<label class="radio-inline">
-								<input type="radio" value="informazioni" id="pro-chx-commercial" name="tipo" id="tipo" class="pro-chx" value="unconstructed" checked>
+								<input type="radio" value="Richiesta di informazioni" id="pro-chx-commercial" name="tipo" id="tipo" class="pro-chx" value="unconstructed" checked>
 								<div class="clab">Contatta per informazioni</div>
 							</label>
 						</li>

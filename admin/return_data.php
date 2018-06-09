@@ -89,10 +89,10 @@ if(isset($_REQUEST['barre'])){
 else if(isset($_REQUEST['Agg_com'])){
 	$sql = new Sql("localhost","root","","progetto_esame");
 	$result=$sql->return_n_comments();
-	if($result->num_rows>0){
+	$sql->chiudi();
+	if($result->num_rows==1){
 		$row=$result->fetch_assoc();
 		$total=$row['total'];
-		$sql->chiudi();
 		if($total==$_REQUEST['count'])
 			echo "false";
 		else{
@@ -139,7 +139,7 @@ else if(isset($_REQUEST['Agg_com'])){
 								<td>".$row['Username'] ."</td>
 								<td>".$row['Data']."</td>
 								<td>".$row['Ora']."</td>
-								<td><a class='btn btn-default guarda' data-toggle='modal' id='$id' data-target='#$id'>Guarda</a> <a id='$id' onclick='elimina()' class='btn btn-danger' >Elimina</a></td>
+								<td><a class='btn btn-default guarda' data-toggle='modal' id='$id' data-target='#$id'>Guarda</a> <a id='$id' onclick='elimina_commento(event);' class='elimina btn btn-danger' >Elimina</a></td>
 							</tr>
 
 							<div class='modal fade' id='$id' tabindex='-1' role='dialog' aria-labelledby='myModalLabel'>
@@ -171,7 +171,7 @@ else if(isset($_REQUEST['Agg_com'])){
 			}else
 				exit("false");
 		}
-	}else 
+	}else
 		exit("false");
 }else if(isset($_REQUEST['us'])){
 	$sql = new Sql("localhost","root","","progetto_esame");
@@ -206,7 +206,7 @@ else if(isset($_REQUEST['Agg_com'])){
 			}else
 				exit("false");
 		}
-	}else 
+	}else
 		exit("false");
 }else if(isset($_REQUEST['n_vis'])){
 	$sql = new Sql("localhost","root","","progetto_esame");
@@ -220,7 +220,7 @@ else if(isset($_REQUEST['Agg_com'])){
 		else{
 			exit($total);
 		}
-	}	
+	}
 }else if(isset($_REQUEST['vis'])){
 	$sql = new Sql("localhost","root","","progetto_esame");
 	$result=$sql->return_n_visitors();
@@ -260,7 +260,79 @@ else if(isset($_REQUEST['Agg_com'])){
 			}else
 				exit("false");
 		}
-	}else 
+	}else
+		exit("false");
+}else if(isset($_REQUEST['not'])){
+	$sql = new Sql("localhost","root","","progetto_esame");
+	$result=$sql->stampa_richieste();
+	
+	if($result->num_rows>0){
+		$result1=$sql->n_richieste();
+		$sql->chiudi();
+		$row=$result1->fetch_assoc();
+		if($row['total']!=$_REQUEST['count']){
+			echo  "<div id='notifiche' class='notifiche panel-group'>";
+			while($row=$result->fetch_assoc()){
+				echo "
+					<div id='".$row['Id_richiesta']."' class='panel panel-danger notifica'>
+					  <div class='panel-heading'>
+							<h5>".$row['Tipo']." di ".$row['Username']." in data ".$row['Data']." alle ore ".$row['Ora']."</h5>
+					  </div>
+					  <div class='panel-body'>
+						  <h5>".$row['Testo']."</h5>
+					  </div>
+					  <div class='panel-footer'>
+						  <h5>Rispondi:</h5>
+
+						  <textarea style='width: 100%;' type='text' id='rispo' class='".$row['Id_richiesta']."' name='rispo'></textarea><br><br>
+
+						  <button name='".$row['Username']."' id='".$row['Id_richiesta']."' type='button' onclick='invia_notifica(event);' class='noti btn btn-primary'>Invia</button>
+						  <input id='".$row['Id_richiesta']."' value='Ignora' type='button' onclick='elimina_notifica(event);' name='ignora' class='ignora btn btn-danger'></input>
+
+					   </div>
+					</div>";
+			}
+			echo "</div>";
+		}else
+			exit("false");
+	}else{
+		exit("false");
+	}
+}else if(isset($_REQUEST['n_not'])){
+	$sql = new Sql("localhost","root","","progetto_esame");
+	$result=$sql->n_richieste();
+	$sql->chiudi();
+	if($result->num_rows>0){
+		$row=$result->fetch_assoc();
+		if($row['total']==$_REQUEST['count'])
+			echo "false";
+		else{
+			exit($row['total']);
+		}
+	}
+}else if(isset($_REQUEST['manda'])){
+	$sql = new Sql("localhost","root","","progetto_esame");
+	$t=$sql->inserisci_risposta($_REQUEST['user'],$_REQUEST['risposta']);
+	$sql->chiudi();
+	if($t==true)
+		echo "true";
+	else
+		echo "false";
+}else if(isset($_REQUEST['ignora'])){
+	$sql = new Sql("localhost","root","","progetto_esame");
+	$t=$sql->elimina_richiesta($_REQUEST['Id']);
+	$sql->chiudi();
+	if($t==true)
+		exit("true");
+	else
+		exit("false");
+}else if(isset($_REQUEST['elimina'])){
+	$sql = new Sql("localhost","root","","progetto_esame");
+	$t=$sql->elimina_commento($_REQUEST['Id']);
+	$sql->chiudi();
+	if($t==true)
+		exit("true");
+	else
 		exit("false");
 }
 ?>

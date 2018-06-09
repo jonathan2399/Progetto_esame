@@ -40,8 +40,54 @@ if(isset($_REQUEST['invia'])){
 	<script src="./Templates/js/bootstrap.min.js"></script>
     <link href="./Templates/css/bootstrap.min.css" rel="stylesheet">
     <link href="./Templates/css/style.css" rel="stylesheet">
+	<style>
+	  .loader {
+	  border: 16px solid #f3f3f3;
+	  border-radius: 50%;
+	  border-top: 16px solid white;
+	  border-right: 16px solid #337AB7;
+	  border-bottom: 16px solid white;
+	  border-left: 16px solid #337AB7;
+	  width: 120px;
+	  height: 120px;
+	  -webkit-animation: spin 1s linear infinite;
+	  animation: spin 1s linear infinite;
+	}
+
+	@-webkit-keyframes spin {
+	  0% { -webkit-transform: rotate(0deg); }
+	  100% { -webkit-transform: rotate(360deg); }
+	}
+
+	@keyframes spin {
+	  0% { transform: rotate(0deg); }
+	  100% { transform: rotate(360deg); }
+	}
+	</style>
   </head>
   <body>
+	<script>
+		$(window).on('load',function(){
+			$('#loading_screen').fadeOut("fast",function(){
+				$("#page").css("visibility","visible");
+				$("#page").fadeIn("fast");
+			});
+		});
+		
+		$(document).ready(function(){
+			$("#page").fadeOut("fast");
+			$('#loading_screen').fadeIn("slow");
+		});
+	</script>
+	<div style="background-color: #E74C3C; color: white;" id="loading_screen">
+		<!--visibility: hidden-->
+	  <center>
+	  <h1>Attendi</h1>
+	  <p>La pagina &egrave; in caricamento<br/>
+	  Resta connesso e non cambiare sito!</p>
+	  <div id="loader" class="loader"></div></center>
+	</div>
+	<div id="page">
     <nav class="navbar navbar-default">
       <div class="container">
         <div class="navbar-header">
@@ -92,5 +138,6 @@ if(isset($_REQUEST['invia'])){
     <footer id="footer">
       <p>Copyright AdminStrap, &copy; 2017</p>
     </footer>
+	</div>
   </body>
 </html>

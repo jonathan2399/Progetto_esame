@@ -1,7 +1,7 @@
 <html>
 <head>
 	<meta charset="UTF-8">
-	<title>Nome applicazione</title>
+	<title>SearchPlaces</title>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width,initial-scale=1">
 	<meta http-equiv="X-UA-Compatible" content="IE=Edge">
@@ -9,6 +9,7 @@
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
 	<style>
 		.loader {
@@ -22,6 +23,10 @@
 		  height: 120px;
 		  -webkit-animation: spin 1s linear infinite;
 		  animation: spin 1s linear infinite;
+		}
+		
+		.checked {
+    		color: orange;
 		}
 
 		@-webkit-keyframes spin {
@@ -37,6 +42,15 @@
 		#page{
 			overflow-x: hidden;
 			overflow-y: auto;
+		}
+		
+		.card-footer{
+			
+			/*background: rgb(100, 100, 100);*/
+			background: #337AB7;
+			opacity: 0.7;
+			font-size: 20px;
+			color: white;
 		}
 	</style>
 </head>
@@ -56,16 +70,17 @@
 			$("#loading_screen").css("visibility","visible");
 			$('#loading_screen').fadeIn("slow");
 
-			var id = getUrlVars()["page"];
-			$("li#"+id).addClass("active");
-			function getUrlVars() {
-				var vars = {};
-				var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {
-					vars[key] = value;
-				});
-				return vars;
-			}
+			//var id = getUrlVars()["page"];
+			//$("li#"+id).addClass("active");
 		});
+		/*
+		function getUrlVars() {
+			var vars = {};
+			var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {
+				vars[key] = value;
+			});
+			return vars;
+		}*/
 	</script>
 
 	<div style="background-color: rgb(255, 163, 26); color: white;" id="loading_screen">
@@ -84,8 +99,8 @@
 				<a href="../index.php"><button id="home" name="home" class="btn btn-primary">TORNA ALLA HOME</button></a>
 			</div>
 			<div class="col-md-4 container">
-				<h1 class="display-1">Ecco i risultati</h1>
-				<p id="t" class="lead">Clicca sull'immagine per vedere il posto</p>
+				<h1 style="color: white;" class="display-1">Ecco i risultati</h1>
+				<p style="color: white;" id="t" class="lead">Clicca sull'immagine per vedere il posto</p>
 			</div>
 		</div>
 	</div>
@@ -168,7 +183,16 @@
 									echo("<h5 class=\"card-title\">" . $row["Nome"] . "</h5>");
 									echo("<p  class=\"card-text\">". $row["Indirizzo"] .  "</p>");
 								echo("</div>");
-							echo("</div>");
+								echo("<div  class=\"card-footer text-center\">");
+									for($i=1,$n=0.6;$i<6;$i++,$n++){
+										if($row['Rating']>=$n)
+											echo "<span class='fa fa-star checked'></span>";
+										else
+											echo "<span class='fa fa-star'></span>";
+									}
+									echo "   ".$row['Rating'];
+								echo("</div>");
+							echo("</div><br>");
 						echo("</div>");
 						$c++;
 
@@ -181,9 +205,7 @@
 			 }
 		?>
 	</div>
-
 	<!--Footer-->
-
 	<footer class="page-footer font-small blue pt-4 mt-4">
 		<!--Footer Links-->
 		<div class="container-fluid text-center text-md-left" style="background-color: rgb(100,100,100); color: white; ">
@@ -204,10 +226,10 @@
 							echo("</li>");
 							//NUMERI DI PAGINA
 							for($i=1;$i<$total_pages+1;$i++){
-									if($i==1)
-										echo("<li id='$i' class=\"page-item\"><a class=\"page-link active\" href='dati.php?page=$i&paese=$paese&query=$query' >" . $i . "</a></li>");
-								    else
-										echo("<li id='$i' class=\"page-item\"><a class=\"page-link \" href='dati.php?page=$i&paese=$paese&query=$query' >" . $i . "</a></li>");
+									if($_GET['page']==$i)
+										echo("<li id='$i' class=\"page-item active\"><a class=\"page-link\" href='dati.php?page=$i&paese=$paese&query=$query' >".$i."</a></li>");
+									else
+										echo("<li id='$i' class=\"page-item\"><a class=\"page-link\" href='dati.php?page=$i&paese=$paese&query=$query' >".$i."</a></li>");
 							}
 
 							echo("<li class=\"page-item\">");

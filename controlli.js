@@ -12,7 +12,7 @@ $(document).ready(function() {
             cognome : {
               required : true
             },
-			
+
 			email : {
                 required : true,
                 // Definiamo il campo email come un campo di tipo email
@@ -22,7 +22,7 @@ $(document).ready(function() {
 					type: "post"
 				}
             },
-			
+
 			user : {
                 required : true,
 				remote:{
@@ -30,7 +30,7 @@ $(document).ready(function() {
 					type: "post"
 				}
             },
-            
+
             pass : {
                 required : true,
                 // Settiamo la lunghezza minima e massima per il campo password
@@ -68,7 +68,7 @@ $(document).ready(function() {
 				required: "Campo username obbligatorio!",
 				remote: "L'username è già utilizzato da un altro utente!"
 			}
-			
+
         },
         // Settiamo il submit handler per la form
         submitHandler: function() {
@@ -99,11 +99,11 @@ $(document).ready(function() {
 					alert("Chiamata fallita, si prega di riprovare...");
 				},
 			});
-			
+
 		}
-		
+
     });
-	
+
 	$('#form3').validate({
 		rules:{
 			pas: {
@@ -111,7 +111,7 @@ $(document).ready(function() {
 				minlength: 5,
 				maxlength: 16
 			},
-			
+
 			ripe:{
 				required: true,
 				minlength: 5,
@@ -134,15 +134,15 @@ $(document).ready(function() {
 		},
 		submitHandler: function() {
 			var pass = $('#pas').val();
-			$.ajax({  
+			$.ajax({
 			  type: "POST",
-			  url: "./dinamiche/controlla.php",  
+			  url: "./dinamiche/controlla.php",
 			  data: {
 				update: 1,
 				pass: pass
 			  },
 			  dataType: "text",
-			  success: function(response){ 
+			  success: function(response){
 				  $(':input', '#form3').val('');
 				  alert(response);
 			  },
@@ -152,13 +152,13 @@ $(document).ready(function() {
 			});
         }
 	});
-	
+
 	$('#form2').validate({
 		rules:{
 			us:{
 				required: true
 			},
-			
+
 			testo:{
 				required: true
 			}
@@ -167,17 +167,18 @@ $(document).ready(function() {
 			us: {
                 required: "Campo username obbligatorio!"
             },
-			
+
 			testo: {
                 required: "Inserisci del testo"
             }
 		},
 		submitHandler: function() {
 			var tipo = $('input[name="tipo"]:checked').val();
+      		var utente = $('#us').val();
 			var testo = $('#testo').val();
-			$.ajax({  
+			$.ajax({
 			  type: "POST",
-			  url: "./dinamiche/controlla.php",  
+			  url: "./dinamiche/controlla.php",
 			  data: {
 				invia: 1,
 				tipo: tipo,
@@ -185,7 +186,9 @@ $(document).ready(function() {
 			  },
 			  dataType: "text",
 			  success: function(response){
-				  $(':input', '#form2').val('');
+          		  $(':input', '#testo').val('');
+				  $(':input', '#us').val(utente);
+				  //$(':input', '#form2').val('');
 				  alert(response);
 			  },
 			  error: function(){
