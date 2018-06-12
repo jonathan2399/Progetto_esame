@@ -2,13 +2,13 @@
 include("../classi/Sql.php");
 session_start();
 if(isset($_REQUEST['Elimina'])){
-	$sql = new Sql("localhost","root","","progetto_esame");
+	require("./config_sql.php");
 	if($sql->elimina_commento($_REQUEST['Id'])!=false)
 		exit("cancellato");
 	$sql->chiudi();
 
 }else if(isset($_REQUEST['Guarda'])){
-	$sql = new Sql("localhost","root","","progetto_esame");
+	require("./config_sql.php");
 	if($sql->ritorna_commento($_REQUEST['Id'])!=false){
 			exit("<div class='modal fade' id='addPage' tabindex='-1' role='dialog' aria-labelledby='myModalLabel'>
 		  <div class='modal-dialog' role='document'>
@@ -110,7 +110,7 @@ if(isset($_REQUEST['Elimina'])){
                 <th>Ora</th>
 						<th></th>
           		</tr><tbody>";
-						$sql = new Sql("localhost","root","","progetto_esame");
+						require("./config_sql.php");
 						$result=$sql->ritorna_commenti();
 						if($result->num_rows>0){
 							while($row = mysqli_fetch_array($result)){

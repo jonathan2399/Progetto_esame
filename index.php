@@ -14,7 +14,7 @@ $port=$_SERVER['REMOTE_PORT'];
 $info=$_SERVER['HTTP_USER_AGENT'];
 $host=$_SERVER['HTTP_HOST'];
 
-$sql = new Sql("localhost","root","","progetto_esame");
+require("./config_sql.php");
 $sql->inserisci_visitatore($ip,$port,$host,$info);
 $sql->chiudi();
 
@@ -42,7 +42,8 @@ if(isset($_COOKIE['SID'])&&isset($_COOKIE['TOKEN'])){
 	<meta name="viewport" content="width=device-width,initial-scale=1">
 	<meta http-equiv="X-UA-Compatible" content="IE=Edge">
 	<link rel="stylesheet" href="style.css">
-	<script type="text/javascript" src="https://maps.google.it/maps/api/js?key=AIzaSyAW121HZee767g3JOEQ1MGMEGvUUjc04Xw&libraries=places"></script>
+	<link rel="icon" href="./immagini/logo2.jpg" type="image/jpg" />
+	<script type="text/javascript" src="https://maps.google.it/maps/api/js?key=AIzaSyCRbS1sDCCEaZLMyPXgYHOXB_Kh70f-0C8&libraries=places"></script>
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.min.css">
 	<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
@@ -52,6 +53,7 @@ if(isset($_COOKIE['SID'])&&isset($_COOKIE['TOKEN'])){
 	<script type="text/javascript" src="controlli.js"></script>
 
 	<style>
+		
 	#form1 label.error {
 	   color: #f33;
 	   padding: 0;
@@ -304,7 +306,35 @@ if(isset($_COOKIE['SID'])&&isset($_COOKIE['TOKEN'])){
 	  0% { transform: rotate(0deg); }
 	  100% { transform: rotate(360deg); }
 	}
+	
+	/* STILE DELLE CATEGORIE */
+	.over{
+		position: absolute;
+		top: 0;
+		bottom: 0;
+		left: 0;
+		right: 0;
+		height: 100%;
+		width: 100%;
+		opacity: 0;
+		transition: .5s ease;
+		background-color: #337AB7;
+	}
 
+	.cate:hover .over {
+		opacity: 1;
+	}
+
+	.t{
+		color: white;
+		  font-size: 20px;
+		  position: absolute;
+		  top: 50%;
+		  left: 50%;
+		  transform: translate(-50%, -50%);
+		  -ms-transform: translate(-50%, -50%);
+		  text-align: center;
+	}
 	</style>
 </head>
 <body>
@@ -319,17 +349,6 @@ if(isset($_COOKIE['SID'])&&isset($_COOKIE['TOKEN'])){
 	
 	<!-- SCRIPT CHE SI OCCUPA DELL'AUTOCOMPLETE TRAMITE API DI GOOGLE MAPS -->
 	<script>
-		function mostra(){
-			var citta = $('#citta').val();
-			var query = $('#query').val();
-			if(citta!==""||query!==""){
-				$("#page").fadeOut("fast");
-				$("#loading_screen").fadeIn("fast");
-			}else{
-				alert("Ti mancano i parametri");
-			}
-		}
-		
 		$(window).on('load',function(){
 			$('#loading_screen').fadeOut("fast",function(){
 				$("#page").css("visibility","visible");
@@ -344,6 +363,19 @@ if(isset($_COOKIE['SID'])&&isset($_COOKIE['TOKEN'])){
 			$('#scritta').removeClass('bounceInDown',function(){
 				$('#scritta').addClass('infinite pulse');
 			});*/
+			//VALIDAZIONE DEL FORM CONTROLLO PARAMETRI SE SONO SETTATI
+			$('#mioform').validate({
+				submitHandler: function(form){
+					var citta = $('#citta').val();
+					var query = $('#query').val();
+					if(citta!==""||query!==""){
+						$("#page").fadeOut("fast");
+						$("#loading_screen").fadeIn("fast");
+						form.submit();
+					}else
+						alert("Ti mancano i parametri!");
+				}
+			});
 			
 			$('.cat').click(function(){
 				var c = $('#citta').val();
@@ -357,12 +389,6 @@ if(isset($_COOKIE['SID'])&&isset($_COOKIE['TOKEN'])){
 				}else{
 					alert("Inserisci un luogo!");
 				}
-			});
-
-			$(".cat").hover(function(){
-				$(this).css("opacity", "0.5");
-				}, function(){
-				$(this).css("opacity", "1");
 			});
 			
 			//FUNZIONE PER L'AUTOCOMPLETE NELLE QUERY DA CERCARE-->
@@ -439,6 +465,7 @@ if(isset($_COOKIE['SID'])&&isset($_COOKIE['TOKEN'])){
 			   var autocomplete = new google.maps.places.Autocomplete(input);
 		  }
 		  google.maps.event.addDomListener(window, 'load', init);
+			
 		});
 	</script>
 	<div id="page">
@@ -524,16 +551,28 @@ if(isset($_COOKIE['SID'])&&isset($_COOKIE['TOKEN'])){
 			<!-- GESTIONE SLIDER -->
 			<div id="mycarousel" class="carousel slide" data-ride="carousel">
 				<div class="carousel-inner" role="listbox">
-					<div id="1" class="item active" style="background-image: url(./immagini/roma.jpg);">
+					<div id="1" class="item active" style="background-image: url(./immagini/londra.jpg);">
 						<div class="filter"></div>
 					</div>
-					<div id="2" class="item" style="background-image: url(./immagini/parigi.jpg);">
+					<div id="2" class="item" style="background-image: url(./immagini/sydney.jpg);">
 						<div class="filter"></div>
 					</div>
-					<div id="3" class="item" style="background-image: url(./immagini/berlino.jpg);">
+					<div id="3" class="item" style="background-image: url(./immagini/new_york.jpg);">
 						<div class="filter"></div>
 					</div>
-					<div id="4" class="item" style="background-image: url(./immagini/londra.jpg);">
+					<div id="4" class="item" style="background-image: url(./immagini/parigi.jpg);">
+						<div class="filter"></div>
+					</div>
+					<div id="5" class="item" style="background-image: url(./immagini/berlino.jpg);">
+						<div class="filter"></div>
+					</div>
+					<div id="6" class="item" style="background-image: url(./immagini/ponte.jpg);">
+						<div class="filter"></div>
+					</div>
+					<div id="8" class="item" style="background-image: url(./immagini/madrid.jpg);">
+						<div class="filter"></div>
+					</div>
+					<div id="9" class="item" style="background-image: url(./immagini/roma.jpg);">
 						<div class="filter"></div>
 					</div>
 				</div>
@@ -558,7 +597,7 @@ if(isset($_COOKIE['SID'])&&isset($_COOKIE['TOKEN'])){
 													<input type="text" class="search-query form-control" id="query" name="query" placeholder="Cerca bar, pizzerie, ristoranti" />
 													<div style="text-align: left;" id="result"> </div>
 											</div>
-											<button type="submit" id="cerca" name="cerca" onclick="mostra()" class="btn btn-primary">Cerca</button>
+											<button type="submit" id="cerca" name="cerca" class="btn btn-primary">Cerca</button>
 									</form>
 								</div>
 							</div>
@@ -569,79 +608,66 @@ if(isset($_COOKIE['SID'])&&isset($_COOKIE['TOKEN'])){
 			</center>
 		</header>
 
-
-		<div class="row" id="categories" >
-			<div class="card-deck">
-			  <div class="col-lg-3 col-md-3 col-sm-3">
+		<div  class="row" id="categories" >
+			<div  style='margin-top: 5px; margin-bottom: 10px;' class="card-deck">
+			  <div class="col-lg-3 col-md-3 col-sm-3 cate">
 				  <center>
-				  <a class="cat" href="#" id="food" >
-				  <div class="animated bounceInDown card" >
-					<img class="animated fadeIn card-img-top img-circle" src="./immagini/cibo.jpg" width="200px" height="140px"  alt="Card image cap">
-					<div class="card-body" >
-					  <h5 class="animated fadeIn card-title" style="background-color: orange">Cibo</h5>
-					  <!--<p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>-->
-					</div>
-				  </div>
-				</a>
+					  <a class="cat" href="#" id="food" >
+					  <div class="animated bounceInDown card" >
+						<img class="animated fadeIn card-img-top img-circle" src="./immagini/cibo.jpg" width="200px" height="140px"  alt="Card image cap">
+						<div style='margin-top: -1px;' class="card-body" >
+						  <h5 class="animated fadeIn card-title" style="background-color: #337AB7">Cibo</h5>
+						</div>
+					  </div>
+						  <div class='over'><div class='t'><h4>SCEGLI CATEGORIA CIBO</h4><hr></div></div>
+					</a>
 				  </center>
 			  </div>
-			  <div class="col-lg-3 col-md-3 col-sm-3">
+			  <div class="col-lg-3 col-md-3 col-sm-3 cate">
 				  <center>
-				  <a class="cat" href="#" id="divertimento" >
+				  <a class="cat" href="#" id="club" >
 					  <div class="animated bounceInDown card" >
 						<img class="animated fadeIn card-img-top img-circle" src="./immagini/svago.jpg" width="200px" height="140px"  alt="Card image cap">
-						<div class="card-body">
-						  <h5  class="animated fadeIn card-title" style="background-color: orange">Divertimento</h5>
-						  <!--<p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>-->
-
+						<div style='margin-top: -1px;' class="card-body">
+						  <h5  class="animated fadeIn card-title" style="background-color: #337AB7">Divertimento</h5>
 						</div>
 					  </div>
+					  <div class='over'><div class='t'><h4>SCEGLI CATEGORIA DIVERTIMENTO</h4><hr></div></div>
 				  </a>
 				  </center>
 			  </div>
-			  <div class="col-lg-3 col-md-3 col-sm-3">
+			  <div class="col-lg-3 col-md-3 col-sm-3 cate">
 				  <center>
-				  <a class="cat" href="#" id="culture" >
+				  <a class="cat" href="#" id="library" >
 					  <div class="animated bounceInDown card" >
 						<img class="animated fadeIn card-img-top img-circle" src="./immagini/cultura.jpg" width="200px" height="140px"  alt="Card image cap">
-						<div class="card-body" >
-						  <h5  class="animated fadeIn card-title" style="background-color: orange;">Cultura</h5>
-						  <!--<p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>-->
-
+						<div style='margin-top: -1px;' class="card-body" >
+						  <h5  class="animated fadeIn card-title" style="background-color: #337AB7;">Cultura</h5>
 						</div>
 					  </div>
+					  <div class='over'><div class='t'><h4>SCEGLI CATEGORIA CULTURA</h4><hr></div></div>
 				  </a>
 				  </center>
 			  </div>
-			  <div class="col-lg-3 col-md-3 col-sm-3" style="background-color: white;">
+			  <div class="col-lg-3 col-md-3 col-sm-3 cate" style="background-color: white;">
 				  <center>
 			      <a class="cat" href="#" id="shopping" >
 					  <div class="animated bounceInDown card" >
 						<img class="animated fadeIn card-img-top img-circle" src="./immagini/shopping.jpg" width="200px" height="140px"  alt="Card image cap">
-						<div class="card-body" >
-						  <h5  class="animated fadeIn card-title" style="background-color: orange;">Shopping</h5>
-						  <!--<p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>-->
-
+						<div style='margin-top: -1px;' class="card-body" >
+						  <h5  class="animated fadeIn card-title" style="background-color: #337AB7;">Shopping</h5>
 						</div>
 					  </div>
+					  <div class='over'><div class='t'><h4>SCEGLI CATEGORIA SHOPPING</h4><hr></div></div>
 				  </a>
 				  </center>
 			   </div>
+			   <hr>
 			</div>
+			
+			<!-- GESTIONE DEL FOOTER -->
+			<?php require("footer.php");?>
 		</div>
-
-		<!-- GESTIONE DEL FOOTER -->
-		<!--Footer-->
-		<!--
-		<div class="row">
-		<footer id="footer" class="page-footer font-small blue pt-4 mt-4">
-			<div class="footer-copyright py-3 text-center" style="background-color: rgb(100,100,100); color: white; ">
-				© 2018 Copyright:
-				<a href="https://mdbootstrap.com/material-design-for-bootstrap/"> MDBootstrap.com </a>
-			</div>
-		</footer>
-		</div>-->
-		<!--/.Footer-->
 	</div>
 
    <!-- FINESTRA MODALE PER L'INSERIMENTO DEI DATI DA PARTE DELL'UTENTE LOGIN -->

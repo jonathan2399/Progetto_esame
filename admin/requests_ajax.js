@@ -92,8 +92,9 @@ $(document).ready(function(){
 				count: count
 			  },
 			  success:function(response){
-					if(response!==false){
-						//alert('bella');
+					if(response.includes('false')){
+						
+					}else{
 						$('.com').replaceWith("<span id='"+response+"' class='badge com'>"+response+"</span>");
 						$('.n_com').replaceWith("<h2 class='n_com'><span class='glyphicon glyphicon-pencil' aria-hidden='true'></span>"+response+"</h2>");
 
@@ -444,6 +445,7 @@ $(document).ready(function(){
 							  },
 							  success:function(response){
 								if(response!=="false"){
+									alert('eliminata');
 								  $('.notifiche #'+id).fadeOut("slow",function(){
 						  			$('.notifiche #'+id).remove();  
 					  			  })

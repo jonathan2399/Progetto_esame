@@ -3,7 +3,7 @@ include("./classi/Sql.php");
 //CONTROLLA REGISTRAZIONE
 
 if(isset($_REQUEST['inserisci'])){
-	$sql = new Sql("localhost","root","","progetto_esame");
+	require("./config_sql.php");
 	if($sql->inserisci_user($_REQUEST['user'],$_REQUEST['email'],$_REQUEST['nome'],$_REQUEST['cognome'],$_REQUEST['password']))
 		exit("Utente registrato correttamente!");
 	else
@@ -12,7 +12,7 @@ if(isset($_REQUEST['inserisci'])){
 }
 
 function isset_username($username){
-	$sql = new Sql("localhost","root","","progetto_esame");
+	require("./config_sql.php");
     $username = trim($username);
 	if($sql->controlla_user($username)==true)//ritorna true nel momento in cui trova nel database uno user con lo stesso user
 		return true;
@@ -22,7 +22,7 @@ function isset_username($username){
 }
 
 function isset_email($email){
-	$sql = new Sql("localhost","root","","progetto_esame");
+	require("./config_sql.php");
 	$email = trim($email);
 	if($sql->controlla_email($email)==true)
 		return true;//true se utente esiste

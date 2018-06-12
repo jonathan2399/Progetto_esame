@@ -26,7 +26,7 @@ $i=0;
 
 try{
 	//$sql = new Sql("jpinna.it.mysql","jpinna_it","MDA9Kt7Z","jpinna_it");
-	$sql = new Sql("localhost","root","","progetto_esame");
+	require("../config_sql.php");
 	$r = $sql->restituisci_venue($id_elemento);
 	$row = $r->fetch_assoc();
 	$name=$row["Nome"];
@@ -37,12 +37,11 @@ try{
 	$phone=$row["Telefono"];
 	$city=$row["Luogo"];
 	$regione=$row['Regione'];
-	$stato=$row['Stato'];
+	$state=$row['Stato'];
 	$provincia=$row['Provincia'];
+	$categoria=$row['cate'];
 	$cap=$row['Cap'];
 	$descrizione=$row['Descrizione'];
-	$categoria=$row['cate'];
-	$state=$row["Stato"];
 	$img_array = explode(";",$row["Immagini"]);
 	$orario= explode(";",$row['Orario']);
 
@@ -61,7 +60,7 @@ $sql->chiudi();
 <html>
 <head>
 	<meta charset="UTF-8">
-	<title>Nome applicazione</title>
+	<title>SearchPlaces</title>
 	<meta name="viewport" content="width=device-width,initial-scale=1">
 	<meta http-equiv="X-UA-Compatible" content="IE=Edge">
 	<link rel="stylesheet" href="../style.css">
@@ -175,43 +174,57 @@ $sql->chiudi();
 		$(function(){
 			$('#scrollabile').css('height', $(window).height()+'px');
 		});
+		
+		$(window).on('load',function(){
+			$('#loading_screen').fadeOut("fast",function(){
+				$(".container").css("visibility","visible");
+				$(".container").fadeIn("fast");
+			});
+		});
+		
 		$(document).ready(function(){
-
+			
+			$(".container").fadeOut("fast");
+			$('#loading_screen').fadeIn("fast");
+			
 			//INVIA COMMENTO
 			$("#invia").click(function(){
 				var testo = $('#commento').val();
-				$.ajax({
-				  method: 'POST',
-				  url: "controlla.php",
-				  data: "InviaPHP=1" + "&testoPHP=" + testo,
-				  dataType: "html",
-				  success: function(risposta){
-					    $('#risposta').html(risposta);
-						//ELIMINA COMMENTO // PRENDO LA CLASSE DEL PULSANTE CLOSE
-						$('.panel-group .close').click(function(){
-							var id = $(this).attr("id");
-							$.ajax({
-							  method: 'POST',
-							  url: "controlla.php",
-							  data: "Elimina=1" + "&Id=" + id,
-							  dataType: "html",
-							  success: function(risposta){
-								  var count = $('.badge').attr("id");
-								  count=count-1;
-								  $('#risposta .commenti .badge').replaceWith("<span id='"+count+"' class='badge'>"+count+"</span>");
-								  $('.panel-group #'+id).remove();
-							  },
-							  error: function(){
-								alert("Chiamata fallita, si prega di riprovare...");
-							  }
+				if(testo!==""){
+					$.ajax({
+					  method: 'POST',
+					  url: "controlla.php",
+					  data: "InviaPHP=1" + "&testoPHP=" + testo,
+					  dataType: "html",
+					  success: function(risposta){
+							$('#risposta').html(risposta);
+							//ELIMINA COMMENTO // PRENDO LA CLASSE DEL PULSANTE CLOSE
+							$('.panel-group .close').click(function(){
+								var id = $(this).attr("id");
+								$.ajax({
+								  method: 'POST',
+								  url: "controlla.php",
+								  data: "Elimina=1" + "&Id=" + id,
+								  dataType: "html",
+								  success: function(risposta){
+									  var count = $('.badge').attr("id");
+									  count=count-1;
+									  $('#risposta .commenti .badge').replaceWith("<span id='"+count+"' class='badge'>"+count+"</span>");
+									  $('.panel-group #'+id).remove();
+								  },
+								  error: function(){
+									alert("Chiamata fallita, si prega di riprovare...");
+								  }
+								});
 							});
-						});
-				  },
-				  error: function(){
-					alert("Chiamata fallita, si prega di riprovare...");
-				  }
-				});
-				return false;
+					  },
+					  error: function(){
+						alert("Chiamata fallita, si prega di riprovare...");
+					  }
+					});
+					return false;
+				}else
+					alert("Scrivi del testo!");
 			});
 
 			//ELIMINA COMMENTO // PRENDO LA CLASSE DEL PULSANTE CLOSE
@@ -226,7 +239,9 @@ $sql->chiudi();
 				  data: "Elimina=1" + "&Id=" + id,
 				  dataType: "html",
 				  success: function(risposta){
-					  $('.panel-group #'+id).remove();
+					  $('.panel-group #'+id).fadeOut('slow',function(){
+						  $('.panel-group #'+id).remove();
+					  })
 				  },
 				  error: function(){
 					alert("Chiamata fallita, si prega di riprovare...");
@@ -263,9 +278,40 @@ $sql->chiudi();
     		-webkit-animation: fadein 2s; /* Safari and Chrome */
     		-o-animation: fadein 2s; /* Opera */
 		}
+		
+		.loader {
+		  border: 16px solid #f3f3f3;
+		  border-radius: 50%;
+		  border-top: 16px solid rgb(100,100,100);
+		  border-right: 16px solid #337AB7;
+		  border-bottom: 16px solid rgb(100,100,100);
+		  border-left: 16px solid #337AB7;
+		  width: 120px;
+		  height: 120px;
+		  -webkit-animation: spin 1s linear infinite;
+		  animation: spin 1s linear infinite;
+		}
+
+		@-webkit-keyframes spin {
+		  0% { -webkit-transform: rotate(0deg); }
+		  100% { -webkit-transform: rotate(360deg); }
+		}
+
+		@keyframes spin {
+		  0% { transform: rotate(0deg); }
+		  100% { transform: rotate(360deg); }
+		}
 	</style>
 </head>
 <body>
+	<div style="background-color: rgb(255, 163, 26); color: white;" id="loading_screen">
+		<!--visibility: hidden-->
+	  <center>
+	  <h1>Attendi</h1>
+	  <p>La pagina &egrave; in caricamento<br/>
+	  Resta connesso e non cambiare sito!</p>
+	  <div id="loader" class="loader"></div></center>
+	</div>
 	<div class="container">
 	  <div class="row content">
 		<div class="col-sm-3 sidenav">
@@ -327,22 +373,27 @@ $sql->chiudi();
 		<div class="col-sm-9">
 
 			<div id="scrollabile" class="scroll">
-
-		  <h3>Categoria</h3><h5><?php echo $categoria ?></h5>
-		  <hr>
-		  <h3>Città</h3><h5><?php echo $city ?></h5>
-		  <hr>
-		  <h3>Provincia</h3><h5><?php echo $provincia ?></h5>
-		  <hr>
-		  <h3>Regione</h3><h5><?php echo $regione ?></h5>
-		  <hr>
-		  <h3>Stato</h3><h5><?php echo $state ?></h5>
-		  <hr>
-		  <h3>Cap</h3><h5><?php echo $cap ?></h5>
-		  <hr>
+				
+			<?php
+				
+			  echo "
+			  <h3>Categoria</h3><h5>$categoria</h5>
+			  <hr>
+			  <h3>Città</h3><h5>$city</h5>
+			  <hr>
+			  <h3>Provincia</h3><h5>$provincia</h5>
+			  <hr>
+			  <h3>Regione</h3><h5>$regione</h5>
+			  <hr>
+			  <h3>Stato</h3><h5>$state</h5>
+			  <hr>
+			  <h3>Cap</h3><h5><?php echo $cap ?></h5>
+			  <hr>";
+				
+			?>
 		  <h3>Descrizione</h3><h5><?php  echo $descrizione ?></h5>
 		  <hr>
-
+			
 		  <!--<div class="container">-->
 			  <!-- SLIDER CON LE IMMAGINI DEL POSTO -->
 			  <h3>Immagini del posto</h3>
@@ -425,20 +476,14 @@ $sql->chiudi();
 				require("./Commenti/stampa_commenti.php");
 		  	  echo "</div>";
 			}
-
 		  ?>
 		</div>
 		</div>
 	  </div>
 
 	  <!--<div id="back_to_top"><span class="glyphicon glyphicon-arrow-up"></span></div>-->
-	</div>
 	<!-- GESTIONE FOOTER -->
-	<footer class="page-footer font-small blue pt-4 mt-4">
-		<div class="footer-copyright py-3 text-center" style="background-color: rgb(100,100,100); color: white; ">
-				© 2018 Copyright:
-				<a href="https://mdbootstrap.com/material-design-for-bootstrap/"> MDBootstrap.com </a>
-		</div>
-	</footer>
+	<?php require("../footer.php");?>
+	</div>
 </body>
 </html>

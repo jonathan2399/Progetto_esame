@@ -2,14 +2,14 @@
 include("./classi/Sql.php");
 session_start();
 if(isset($_REQUEST['Elimina'])){
-	$sql = new Sql("localhost","root","","progetto_esame");
+	require("./config_sql.php");
 	if($sql->cancella_preferito($_REQUEST['Id'])!=false)
 		exit("cancellato");
 	$sql->chiudi();
 	
 }
 else if(isset($_REQUEST['tutte'])){
-	$sql = new Sql("localhost","root","","progetto_esame");
+	require("./config_sql.php");
 	if($sql->elimina_preferiti($_REQUEST['tutte'])!=false)
 		exit("<div id='risposta' class='container'>
 				
@@ -30,7 +30,7 @@ else if(isset($_REQUEST['tutte'])){
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Nome applicazione</title>
+<title>SearchPlaces</title>
 <style>
 	.filterable {
     margin-top: 15px;
@@ -197,7 +197,7 @@ else if(isset($_REQUEST['tutte'])){
 	<?php
 	//$sql = new Sql("jpinna.it.mysql","jpinna_it","MDA9Kt7Z","jpinna_it");
 	if(isset($_SESSION['User'])){
-		$sql = new Sql("localhost","root","","progetto_esame");
+		require("./config_sql.php");
 		$result = $sql->stampa_preferiti($_SESSION['User']);
 		if($result->num_rows>0){
 			

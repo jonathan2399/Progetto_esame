@@ -1,7 +1,6 @@
 //SCRIPT PER LA GESTIONE DEGLI EVENTI NE MOMENTO IN CUI L'UTENTE SI LOGGA
 $(document).ready(function(){
 	var flag=false;
-	var flag2=false;
 	//CLICCA SU ACCEDI
 	$('#valida').click(function(){
 			var button = $(this);
@@ -64,8 +63,6 @@ $(document).ready(function(){
 					  
 					if(accesso.includes("Login riuscito")){
 						flag=true;
-					}else if(accesso.includes("bloccato")){
-						flag2=true;
 					}
 					
 					  
@@ -96,12 +93,8 @@ $(document).ready(function(){
 								button.attr("valida", "modal");
 							});
 						
-						if(flag2===false){
+						if(flag===false){
 							$('#text').replaceWith("<h4 class='modal-title' id='text' >Login non avvenuto</h4>");
-						}
-						else{
-							$('#text').replaceWith("<h4 class='modal-title' id='text' >Sei stato bloccato</h4>");
-							flag2=false;
 						}
 					}
 				  },

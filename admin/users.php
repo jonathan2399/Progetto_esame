@@ -37,7 +37,7 @@ include("../classi/Sql.php");
                     </tr>
 					<tbody>
 					<?php
-						$sql = new Sql("localhost","root","","progetto_esame");
+						require("./config_sql.php");
 						$result=$sql->ritorna_utenti();
 						if($result->num_rows>0){
 							while($row = mysqli_fetch_array($result)){

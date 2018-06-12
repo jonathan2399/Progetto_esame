@@ -107,14 +107,6 @@
 	background-color: white;
 }
 
-/* GESTIONE DEL FOOTER */
-#footer{
-	margin-top: -8px;
-	margin-bottom: 0px;
-	position: fixed;
-	width: 100%;
-}
-
 /* PAGINA DI CARICAMENTO */
 #loading_screen{
 	display: none;
@@ -337,17 +329,6 @@ Tablet
 		margin-top: 100px;
 		position: relative;
 		background-color: white;
-	}
-
-	#footer{
-		/*margin-top: auto;
-		margin-bottom: 0;
-		/*position: fixed;*/
-		position: fixed;
-		overflow-x: hidden;
-		bottom: 0;
-		width: 100%;
-		/*background-color: rgb(158,158,158);*/
 	}
 
 	#citta{

@@ -1,7 +1,7 @@
 <?php
 include("../classi/Sql.php");
 if(isset($_REQUEST['barre'])){
-	$sql = new Sql("localhost","root","","progetto_esame");
+	require("./config_sql.php");
 	$result=$sql->ritorna_ricerche();
 
 	if($result->num_rows>0){
@@ -44,7 +44,7 @@ if(isset($_REQUEST['barre'])){
 		echo $json;
 	}
 }else if(isset($_REQUEST['regioni'])){
-	$sql = new Sql("localhost","root","","progetto_esame");
+	require("./config_sql.php");
 	$result=$sql->torna_ric_place();
 
 	if($result->num_rows>0){
@@ -87,20 +87,20 @@ if(isset($_REQUEST['barre'])){
 	}
 }
 else if(isset($_REQUEST['Agg_com'])){
-	$sql = new Sql("localhost","root","","progetto_esame");
+	require("./config_sql.php");
 	$result=$sql->return_n_comments();
 	$sql->chiudi();
-	if($result->num_rows==1){
+	if($result->num_rows>0){
 		$row=$result->fetch_assoc();
 		$total=$row['total'];
 		if($total==$_REQUEST['count'])
 			echo "false";
-		else{
+		else
 			exit($total);
-		}
-	}
+	}else
+		exit("false");
 }else if(isset($_REQUEST['Agg_user'])){
-	$sql = new Sql("localhost","root","","progetto_esame");
+	require("./config_sql.php");
 	$result=$sql->return_n_users();
 	$sql->chiudi();
 	if($result->num_rows>0){
@@ -110,9 +110,10 @@ else if(isset($_REQUEST['Agg_com'])){
 		else{
 			exit($row['total']);
 		}
-	}
+	}else
+		exit("false");
 }else if (isset($_REQUEST['com'])){
-	$sql = new Sql("localhost","root","","progetto_esame");
+	require("./config_sql.php");
 	$result=$sql->return_n_comments();
 	if($result->num_rows>0){
 		$row=$result->fetch_assoc();
@@ -135,7 +136,7 @@ else if(isset($_REQUEST['Agg_com'])){
 				while($row=$result->fetch_assoc()){
 					$id=$row['Id_commento'];
 					echo "
-					<tr class='riga' id='$id' >
+					<tr class='$id'>
 								<td>".$row['Username'] ."</td>
 								<td>".$row['Data']."</td>
 								<td>".$row['Ora']."</td>
@@ -174,7 +175,7 @@ else if(isset($_REQUEST['Agg_com'])){
 	}else
 		exit("false");
 }else if(isset($_REQUEST['us'])){
-	$sql = new Sql("localhost","root","","progetto_esame");
+	require("./config_sql.php");
 	$result=$sql->return_n_users();
 	if($result->num_rows>0){
 		$row=$result->fetch_assoc();
@@ -209,7 +210,7 @@ else if(isset($_REQUEST['Agg_com'])){
 	}else
 		exit("false");
 }else if(isset($_REQUEST['n_vis'])){
-	$sql = new Sql("localhost","root","","progetto_esame");
+	require("./config_sql.php");
 	$result=$sql->return_n_visitors();
 	if($result->num_rows>0){
 		$row=$result->fetch_assoc();
@@ -222,7 +223,7 @@ else if(isset($_REQUEST['Agg_com'])){
 		}
 	}
 }else if(isset($_REQUEST['vis'])){
-	$sql = new Sql("localhost","root","","progetto_esame");
+	require("./config_sql.php");
 	$result=$sql->return_n_visitors();
 	if($result->num_rows>0){
 		$row=$result->fetch_assoc();
@@ -263,7 +264,7 @@ else if(isset($_REQUEST['Agg_com'])){
 	}else
 		exit("false");
 }else if(isset($_REQUEST['not'])){
-	$sql = new Sql("localhost","root","","progetto_esame");
+	require("./config_sql.php");
 	$result=$sql->stampa_richieste();
 	
 	if($result->num_rows>0){
@@ -299,7 +300,7 @@ else if(isset($_REQUEST['Agg_com'])){
 		exit("false");
 	}
 }else if(isset($_REQUEST['n_not'])){
-	$sql = new Sql("localhost","root","","progetto_esame");
+	require("./config_sql.php");
 	$result=$sql->n_richieste();
 	$sql->chiudi();
 	if($result->num_rows>0){
@@ -311,7 +312,7 @@ else if(isset($_REQUEST['Agg_com'])){
 		}
 	}
 }else if(isset($_REQUEST['manda'])){
-	$sql = new Sql("localhost","root","","progetto_esame");
+	require("./config_sql.php");
 	$t=$sql->inserisci_risposta($_REQUEST['user'],$_REQUEST['risposta']);
 	$sql->chiudi();
 	if($t==true)
@@ -319,7 +320,7 @@ else if(isset($_REQUEST['Agg_com'])){
 	else
 		echo "false";
 }else if(isset($_REQUEST['ignora'])){
-	$sql = new Sql("localhost","root","","progetto_esame");
+	require("./config_sql.php");
 	$t=$sql->elimina_richiesta($_REQUEST['Id']);
 	$sql->chiudi();
 	if($t==true)
@@ -327,7 +328,7 @@ else if(isset($_REQUEST['Agg_com'])){
 	else
 		exit("false");
 }else if(isset($_REQUEST['elimina'])){
-	$sql = new Sql("localhost","root","","progetto_esame");
+	require("./config_sql.php");
 	$t=$sql->elimina_commento($_REQUEST['Id']);
 	$sql->chiudi();
 	if($t==true)

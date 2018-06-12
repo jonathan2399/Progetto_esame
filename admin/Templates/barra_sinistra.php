@@ -4,7 +4,7 @@
 	<span class="glyphicon glyphicon-cog" aria-hidden="true"></span> Dashboard
   </a>
   <?php
-	$sql = new Sql("localhost","root","","progetto_esame");
+	require("../config_sql.php");
 	$result=$sql->return_n_comments();
 	$row=$result->fetch_assoc();
 	$n_com=$row['total'];

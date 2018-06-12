@@ -110,9 +110,11 @@
 		$latitudini = array();
 		$longitudini = array();
 		$nomi = array();
+		$ids=array();
+		$indi=array();
 		$no_result=false;
 		//$sql = new Sql("jpinna.it.mysql","jpinna_it","MDA9Kt7Z","jpinna_it");
-		$sql = new Sql("localhost","root","","progetto_esame");
+		require("../config_sql.php");
 		$map = new PhpGoogleMap("AIzaSyAcAg8U21nYuM4bWn7PyiV_ZrTUHWEZUbA");
 		$paese=$_GET['paese'];
 		$query=$_GET['query'];
@@ -145,6 +147,8 @@
 					$latitudini[$i]=$row["Latitudine"];
 					$longitudini[$i]=$row["Longitudine"];
 					$nomi[$i]=$row["Nome"];
+					$ids[$i]=$row['Id_dato'];
+					$indi[$i]=$row['Indirizzo'];
 					$i++;
 				}
 			}else{
@@ -157,6 +161,8 @@
 		//RESTITUISCE LA MAPPA CON I RELATIVI MARKER TRAMITE LE COORDINATE PRELEVATE DAL DATABASE
 		if(isset($latitudini[0])&&isset($longitudini[0]))
 			$map->set_coordinate($latitudini[0],$longitudini[0]);
+		$map->set_id($ids);
+		$map->set_indirizzi($indi);
 		$map->set_arraycoordinate($latitudini,$longitudini);
 		$map->set_text($nomi);
 		$map->set_nmarkers(count($latitudini));
@@ -176,7 +182,7 @@
 						echo("<div class=\"col-lg-4 col-sm-6\">");
 							echo("<div id=\"elemento\" class=\"card-h-100\">");
 								echo "<div class=\"card img-fluid\">";
-									echo("<a href=\"luogo.php?id=".$row["Id_dato"]. "\" class=\"val\"  id=".$row["Id_dato"]. " ><img src=\"$img\" width=\"330px\" height=\"270px\" class=\"card-img-top\"><div class=\"overlay\"><p>CLICCAMI</p></div></a>");
+									echo("<a href=\"luogo.php?id=".$row["Id_dato"]."\" class=\"val\"  id=".$row["Id_dato"]. " ><img src=\"$img\" width=\"330px\" height=\"270px\" class=\"card-img-top\"><div class=\"overlay\"><p>CLICCAMI</p></div></a>");
 								echo "</div>";
 
 								echo("<div  class=\"card-body text-center\">");
@@ -248,15 +254,8 @@
 				?>
 			</div>
 		</div>
-		<!--/.Footer Links-->
-		<!--Copyright-->
-		<div id="fo" class="footer-copyright py-3 text-center" style="background-color: rgb(100,100,100); color: white; ">
-			© 2018 Copyright:
-			<a href="https://mdbootstrap.com/material-design-for-bootstrap/"> MDBootstrap.com </a>
-		</div>
-		<!--/.Copyright-->
+		<?php require("../footer.php");?>
 	</footer>
 	</div>
-	<!--/.Footer-->
 </body>
 </html>

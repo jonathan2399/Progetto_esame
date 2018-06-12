@@ -25,7 +25,9 @@ if(isset($_REQUEST['invia'])){
 		$_SESSION['nome']=$nome;
 		$_SESSION['cognome']=$cognome;
 		header("Location: page.php");
-	}
+	}else
+		echo "<script>alert('PASSWORD ERRATA!');</script>";
+	
 }else if(isset($_REQUEST['logout'])){
 	session_destroy();
 }
@@ -35,7 +37,7 @@ if(isset($_REQUEST['invia'])){
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Admin Area | Account Login</title>
+    <title>SearchPlaces | Admin area</title>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 	<script src="./Templates/js/bootstrap.min.js"></script>
     <link href="./Templates/css/bootstrap.min.css" rel="stylesheet">

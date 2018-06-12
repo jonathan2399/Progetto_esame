@@ -1,7 +1,7 @@
 <?php
 include("../../classi/Sql.php");
 session_start();
-$sql = new Sql("localhost","root","","progetto_esame");
+require("../../config_sql.php");
 
 if(isset($_REQUEST['aggiorna'])){
 	$result=$sql->ritorna_num_comm($_SESSION['id']);

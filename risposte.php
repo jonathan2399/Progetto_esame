@@ -2,13 +2,13 @@
 include("./classi/Sql.php");
 session_start();
 if(isset($_REQUEST['Elimina'])){
-	$sql = new Sql("localhost","root","","progetto_esame");
+	require("./config_sql.php");
 	if($sql->cancella_risposta($_REQUEST['Id'])!=false)
 		exit("cancellato");
 	$sql->chiudi();
 }
 else if(isset($_REQUEST['tutte'])){
-	$sql = new Sql("localhost","root","","progetto_esame");
+	require("./config_sql.php");
 	if($sql->elimina_risposte($_REQUEST['tutte'])!=false)
 		exit("<div id='risposta' class='container'>
 				<div class='row'>

@@ -6,10 +6,12 @@ class PhpGoogleMap{
     private $latitudine;
     private $longitudine;
     private $indirizzo;
+	private $indirizzi;
     private $latitudini;
     private $longitudini;
     private $nomi;
     private $n;
+	private $id;
     
 	function __construct($_apikey){
     	$this->apikey = $_apikey; //assegna la chiave dell'api di google map 
@@ -45,7 +47,7 @@ class PhpGoogleMap{
     	";
 	  } else {
     		//$JScenterMap = "map.setCenter(new GLatLng(".$this->latitudini[0].", ".$this->longitudini[0]."),14);";
-    		$JScenterMap = "map.setCenter(new GLatLng(".$this->latitudine.", ".$this->longitudine."),10);";
+    		$JScenterMap = "map.setCenter(new GLatLng(".$this->latitudine.", ".$this->longitudine."),12);";
         }
       
 	  
@@ -54,9 +56,18 @@ class PhpGoogleMap{
       echo "
           <script type=\"text/javascript\">
           	  function createMarker(point,html) {
-				var marker = new GMarker(point);
+			  
+			    var icona=new GIcon();
+				  icona.image = './marker.png';
+				  
+				  icona.iconSize = new GSize(30, 34);
+				  icona.shadowSize = new GSize(37, 34);
+				  icona.iconAnchor = new GPoint(9, 34);
+				  icona.infoWindowAnchor = new GPoint(9, 2);
+				  markerOptions = { icon:icona };
+				var marker = new GMarker(point,markerOptions);
 				GEvent.addListener(marker, \"mouseover\", function() { marker.openInfoWindowHtml(html); });
-				//GEvent.addListener(marker, \"click\", function() { marker.openInfoWindowHtml(html); });
+				GEvent.addListener(marker, \"click\", function() { marker.openInfoWindowHtml(html); });
 				return marker;
 			  }
               
@@ -64,6 +75,13 @@ class PhpGoogleMap{
               window.onunload = GUnload;
               function initialize() {
                   if (GBrowserIsCompatible()) {
+				  
+				  
+				  	 
+				  	  var infowindow = new google.maps.InfoWindow({
+    					content: \"<div class='popover'><h5>bella die</h5></div>\"
+  					  });
+
                       var map = new GMap2(document.getElementById(\"map_canvas\")); ";
                       echo $JScenterMap; 
                       //CREAZIONE MARKER DINAMICAMENTE
@@ -71,8 +89,11 @@ class PhpGoogleMap{
                       
                       for ($i=0;$i<($this->n);$i++){
 						$nom = addslashes($this->nomi[$i]);
+						$id=$this->id[$i];
+						$link = "<br><br><a href=\'http://localhost/Progetto/dinamiche/luogo.php?id=$id\'>PREMI PER VEDERE IL POSTO</a>";
+						$indi="<br><strong>Indirizzo: </strong>".$this->indirizzi[$i];
                         echo "
-                        var marker1 = createMarker(new GLatLng(".$this->latitudini[$i].", ".$this->longitudini[$i]."), '$nom');
+                        var marker1 = createMarker(new GLatLng(".$this->latitudini[$i].", ".$this->longitudini[$i]."),'<strong>Nome: </strong>".$nom.$indi.$link."');
             			map.addOverlay(marker1); ";
             		  }
                       echo "map.setUIToDefault();
@@ -116,9 +137,18 @@ class PhpGoogleMap{
       echo "
           <script type=\"text/javascript\">
           	  function createMarker(point,html) {
-				var marker = new GMarker(point);
+			  
+				var icona=new GIcon();
+				  icona.image = './marker.png';
+				  icona.shadow = './marker.png';
+				  icona.iconSize = new GSize(20, 34);
+				  icona.shadowSize = new GSize(37, 34);
+				  icona.iconAnchor = new GPoint(9, 34);
+				  icona.infoWindowAnchor = new GPoint(9, 2);
+				  markerOptions = { icon:icona };
+				var marker = new GMarker(point,markerOptions);
 				GEvent.addListener(marker, \"mouseover\", function() { marker.openInfoWindowHtml(html); });
-				//GEvent.addListener(marker, \"click\", function() { marker.openInfoWindowHtml(html); });
+				GEvent.addListener(marker, \"click\", function() { marker.openInfoWindowHtml(html); });
 				return marker;
 			  }
               
@@ -169,5 +199,13 @@ class PhpGoogleMap{
     function set_nmarkers($num){
     	$this->n = $num;
     }
+	
+	function set_id($id){
+		$this->id=$id;
+	}
+	
+	function set_indirizzi($ind){
+		$this->indirizzi=$ind;
+	}
 }
 ?>

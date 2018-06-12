@@ -238,11 +238,12 @@ class Sql{
 		}
 	}
 
-	function controlla_luogo($luogo){
+	function controlla_luogo($luogo,$citta){
 	   mysqli_escape_string($this->connect,$luogo);
-	   $comando = "SELECT Luogo AS luogo FROM LUOGHI WHERE Luogo LIKE '%".$luogo."%' OR Provincia LIKE '%".$luogo."%' OR Ricercato LIKE '%".$p."%'";
+	   mysqli_escape_string($this->connect,$citta);
+	   $comando = "SELECT Luogo AS luogo FROM LUOGHI WHERE (Luogo LIKE '%".$luogo."%' OR Luogo LIKE '%".$citta."%') OR (Provincia LIKE '%".$luogo."%' OR Provincia LIKE '%".$citta."%') OR (Ricercato LIKE '%".$luogo."%' OR Ricercato LIKE '%".$citta."%')";
 	   $result=$this->connect->query($comando);
-		if($result->num_rows==1)
+		if($result->num_rows>0)
 		  	return true;
 	    else
 		  	return false;
@@ -254,13 +255,13 @@ class Sql{
 		mysqli_escape_string($this->connect,$q);
 		mysqli_escape_string($this->connect,$tot);
 		mysqli_escape_string($this->connect,$start);
-		$comando = "SELECT DISTINCT * FROM DATI JOIN LUOGHIDATI ON DATI.Id_dato=LUOGHIDATI.Id_dato JOIN LUOGHI ON LUOGHIDATI.Id_luogo=LUOGHI.Id_luogo WHERE LUOGHI.Ricercato='".$p."' AND LUOGHIDATI.Query='".$q."'  LIMIT ".($start-1). ",". $tot . "";
+		$comando = "SELECT DISTINCT * FROM DATI JOIN LUOGHIDATI ON DATI.Id_dato=LUOGHIDATI.Id_dato JOIN LUOGHI ON LUOGHIDATI.Id_luogo=LUOGHI.Id_luogo WHERE LUOGHI.Ricercato LIKE '%".$p."%' AND LUOGHIDATI.Query='".$q."'  LIMIT ".($start-1). ",". $tot . "";
 		if($this->connect->query($comando)==TRUE)
 			return $this->connect->query($comando);
 		else
 			return mysqli_error($this->connect);
 	}
-
+	
 	function inserisci_luogo($citta,$provincia,$regione,$stato,$cap,$ricercato){
 		mysqli_escape_string($this->connect,$citta);
 		mysqli_escape_string($this->connect,$provincia);
@@ -601,7 +602,7 @@ class Sql{
 	}
 
 	function torna_ric_place(){
-		$comando="SELECT LUOGHI.Luogo AS place, COUNT(DATI.Id_dato) AS ricerche FROM LUOGHI JOIN LUOGHIDATI ON LUOGHI.Id_luogo=LUOGHIDATI.Id_luogo JOIN DATI ON DATI.Id_dato=LUOGHIDATI.Id_dato GROUP BY LUOGHI.Luogo ";
+		$comando="SELECT LUOGHI.Ricercato AS place, COUNT(DATI.Id_dato) AS ricerche FROM LUOGHI JOIN LUOGHIDATI ON LUOGHI.Id_luogo=LUOGHIDATI.Id_luogo JOIN DATI ON DATI.Id_dato=LUOGHIDATI.Id_dato GROUP BY LUOGHI.Luogo ";
 		if($this->connect->query($comando)==TRUE)
 			return $this->connect->query($comando);
 		else
